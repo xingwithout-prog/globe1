@@ -14,7 +14,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; color: #f8fafc; }
+html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; color: #ffffff; }
 
 /* WebGL Fullscreen Backdrop */
 #webgl-main { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
@@ -40,36 +40,37 @@ html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdh
 
 /* Header */
 .header-panel { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; }
-.brand-zone h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 4px; color: #fff; }
+.brand-zone h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 4px; color: #ffffff; }
 .brand-zone h1 span { color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
-.brand-zone p { font-size: 11px; letter-spacing: 4px; color: #64748b; text-transform: uppercase; margin-top: 2px; }
-.system-status { display: flex; align-items: center; gap: 12px; font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--neon-red); letter-spacing: 1px; }
+.brand-zone p { font-size: 11px; letter-spacing: 4px; color: #ffffff; text-transform: uppercase; margin-top: 2px; }
+.system-status { display: flex; align-items: center; gap: 12px; font-family: 'Orbitron', sans-serif; font-size: 12px; color: #ffffff; letter-spacing: 1px; }
 .status-pulse { width: 7px; height: 7px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 10px var(--neon-red); animation: pulse 1.5s infinite; }
 
 /* Layout Columns */
 .left-sidebar { grid-column: 1; display: flex; flex-direction: column; gap: 20px; }
 .right-sidebar { grid-column: 3; display: flex; flex-direction: column; gap: 20px; }
 
-.panel-title { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 2px; color: #94a3b8; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.panel-title { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 2px; color: #ffffff; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .panel-title::before { content: ''; width: 3px; height: 12px; background: var(--neon-red); display: inline-block; box-shadow: 0 0 6px var(--neon-red); }
 
 /* Dashboard Cards */
 .grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .metric-card { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 14px; border-radius: 8px; }
-.metric-card .label { font-size: 11px; color: #64748b; letter-spacing: 1px; text-transform: uppercase; }
-.metric-card .value { font-family: 'Orbitron', sans-serif; font-size: 22px; color: #fff; font-weight: 600; margin-top: 4px; }
+.metric-card .label { font-size: 11px; color: #ffffff; letter-spacing: 1px; text-transform: uppercase; }
+.metric-card .value { font-family: 'Orbitron', sans-serif; font-size: 22px; color: var(--neon-red); font-weight: 600; margin-top: 4px; }
 
 /* Progress Bars */
 .progress-container { margin-bottom: 12px; }
-.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 5px; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #ffffff; margin-bottom: 5px; }
+.progress-labels .data-pct { color: var(--neon-red); font-family: 'Orbitron', sans-serif; }
 .progress-bar-track { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
 .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-dark-red), var(--neon-red)); width: 0; transition: width 2s ease-out; box-shadow: 0 0 6px var(--neon-red); }
 
 /* Logs Terminal */
 .log-stream { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.log-item { background: rgba(255, 0, 68, 0.01); border: 1px solid rgba(255, 0, 68, 0.03); padding: 10px; border-radius: 6px; font-size: 12px; animation: enterRow 0.4s ease-out forwards; }
+.log-item { background: rgba(255, 0, 68, 0.01); border: 1px solid rgba(255, 0, 68, 0.03); padding: 10px; border-radius: 6px; font-size: 12px; color: #ffffff; animation: enterRow 0.4s ease-out forwards; }
 .log-item .tag { font-family: 'Orbitron', sans-serif; color: var(--neon-red); font-weight: 600; margin-right: 6px; }
-.log-item .meta { display: flex; justify-content: space-between; margin-top: 5px; color: #64748b; font-size: 11px; }
+.log-item .meta { display: flex; justify-content: space-between; margin-top: 5px; color: #ffffff; font-size: 11px; opacity: 0.8; }
 
 @keyframes enterRow { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
@@ -98,7 +99,7 @@ html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdh
         </div>
         <div class="system-status">
             <span class="status-pulse"></span>
-            <span>QUANTUM LINK: ACTIVE</span>
+            <span>LINK MODE: ACTIVE</span>
         </div>
     </header>
 
@@ -131,15 +132,15 @@ html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdh
             <h3 class="panel-title">Hardware Segment Allocation</h3>
             <div class="chart-box">
                 <div class="progress-container">
-                    <div class="progress-labels"><span>MaxMini (AI Edge PC)</span><span>48%</span></div>
+                    <div class="progress-labels"><span>MaxMini (AI Edge PC)</span><span class="data-pct">48%</span></div>
                     <div class="progress-bar-track"><div class="progress-bar-fill" data-width="48"></div></div>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-labels"><span>MaxBook (Performance Laptop)</span><span>34%</span></div>
+                    <div class="progress-labels"><span>MaxBook (Performance Laptop)</span><span class="data-pct">34%</span></div>
                     <div class="progress-bar-track"><div class="progress-bar-fill" data-width="34"></div></div>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-labels"><span>MaxPad (Digital Computing)</span><span>18%</span></div>
+                    <div class="progress-labels"><span>MaxPad (Digital Computing)</span><span class="data-pct">18%</span></div>
                     <div class="progress-bar-track"><div class="progress-bar-fill" data-width="18"></div></div>
                 </div>
             </div>
@@ -237,9 +238,9 @@ renderer.toneMappingExposure = 1.0;
 canvasContainer.appendChild(renderer.domElement);
 
 const renderPass = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.4, 0.3, 0.1);
-bloomPass.threshold = 0.4;  
-bloomPass.strength = 0.5;   
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.1);
+bloomPass.threshold = 0.35;  
+bloomPass.strength = 0.6;   
 bloomPass.radius = 0.4;
 
 const composer = new EffectComposer(renderer);
@@ -315,6 +316,7 @@ function convertLatLon(lat, lon, radius) {
     );
 }
 
+// Pure Global Distribution Nodes (No domestic points)
 const clusterHubs = [
     {lat: 40.71, lon: -74.01}, {lat: 51.51, lon: -0.13}, {lat: 48.86, lon: 2.35},
     {lat: 25.20, lon: 55.27},  {lat: 35.68, lon: 139.76}, {lat: -33.87, lon: 151.21}, 
@@ -322,74 +324,56 @@ const clusterHubs = [
     {lat: 1.35, lon: 103.82}, {lat: 43.65, lon: -79.38}
 ];
 
-const nodeGroup = new THREE.Group();
-earthMesh.add(nodeGroup);
-
-clusterHubs.forEach(hub => {
-    const targetPos = convertLatLon(hub.lat, hub.lon, earthRadius * 1.002);
-    const core = new THREE.Mesh(
-        new THREE.SphereGeometry(0.012, 8, 8),
-        new THREE.MeshBasicMaterial({ color: 0xff0044 })
-    );
-    core.position.copy(targetPos);
-    nodeGroup.add(core);
-
-    const ring = new THREE.Mesh(
-        new THREE.RingGeometry(0.015, 0.03, 16),
-        new THREE.MeshBasicMaterial({ color: 0xff0044, transparent: true, opacity: 0.5, side: THREE.DoubleSide })
-    );
-    ring.position.copy(targetPos);
-    ring.lookAt(new THREE.Vector3(0,0,0));
-    nodeGroup.add(ring);
-});
-
-// 重构飞线引擎：纯线段模型渲染（摒弃斑点颗粒感）
+// High-Texture Bold Dynamic Line Segment Engine
 const customLinesGroup = new THREE.Group();
 earthMesh.add(customLinesGroup);
 let telemetryArcs = [];
-const segmentPoints = 24; // 构成流光线段的平滑网格点数
+const segmentPoints = 12; // Controls segment geometry smooth rendering
 
-function buildPureLineArc(start, end) {
+function buildThickLineArc(start, end) {
     const distance = start.distanceTo(end);
     const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
     const control = mid.normalize().multiplyScalar(earthRadius + distance * 0.32);
     const curve = new THREE.QuadraticBezierCurve3(start, control, end);
     
-    // 实例化一条单独的高亮发光实体线段
-    const lineGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(segmentPoints * 3);
-    lineGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    // Create an initial template path
+    const dummyPoints = [];
+    for(let i=0; i<=segmentPoints; i++) dummyPoints.push(new THREE.Vector3());
+    const dummyPath = new THREE.CatmullRomCurve3(dummyPoints);
     
-    const lineMat = new THREE.LineBasicMaterial({
+    // Use TubeGeometry with MeshBasicMaterial to support real physical thickness across platforms
+    const lineGeo = new THREE.TubeGeometry(dummyPath, 12, 0.014, 4, false); // Increased Thickness to 0.014 radius
+    const lineMat = new THREE.MeshBasicMaterial({
         color: 0xff0044,
         transparent: true,
-        opacity: 0.85,
+        opacity: 0.9,
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
-    const lineMesh = new THREE.Line(lineGeo, lineMat);
+    const lineMesh = new THREE.Mesh(lineGeo, lineMat);
     customLinesGroup.add(lineMesh);
 
     return {
         lineMesh: lineMesh,
         curve: curve,
         progress: 0,
-        speed: 0.006 + Math.random() * 0.004,
-        lineLengthRatio: 0.18 // 限制实体线段占整条轨道的长度比例
+        speed: 0.003 + Math.random() * 0.003, // Adjusted speed for smooth longer transitions
+        lineLengthRatio: 0.35 // Increased Line Segment Length to 0.35
     };
 }
 
 function deployArc() {
-    if(telemetryArcs.length > 5) return; 
+    if(telemetryArcs.length > 13) return; // More numerous (Up to 14 concurrent solid arcs)
     const n1 = Math.floor(Math.random() * clusterHubs.length);
     let n2 = Math.floor(Math.random() * clusterHubs.length);
     while(n1 === n2) n2 = Math.floor(Math.random() * clusterHubs.length);
 
     const p1 = convertLatLon(clusterHubs[n1].lat, clusterHubs[n1].lon, earthRadius);
     const p2 = convertLatLon(clusterHubs[n2].lat, clusterHubs[n2].lon, earthRadius);
-    telemetryArcs.push(buildPureLineArc(p1, p2));
+    telemetryArcs.push(buildThickLineArc(p1, p2));
 }
-for(let i = 0; i < 4; i++) deployArc();
+// Launch massive lines on start
+for(let i = 0; i < 10; i++) deployArc();
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -400,7 +384,6 @@ controls.minDistance = 2.0;
 controls.maxDistance = 6.0;
 controls.enablePan = false;
 
-// 📱 完美移动端自适应引擎：动态拉远相机焦距缩放地球
 function syncContainerDimensions() {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -411,7 +394,7 @@ function syncContainerDimensions() {
 
     if (w < 992) {
         controls.target.set(0, 0.25, 0); 
-        camera.position.z = 5.5; // 📱 通过后移相机，让手机上的地球比例明显缩小，精致且完美居中
+        camera.position.z = 5.5; 
     } else {
         controls.target.set(0, 0, 0);
         camera.position.z = 4.0; 
@@ -428,15 +411,7 @@ function mainExecutionLoop() {
     earthMesh.rotation.y = elapsedTime * 0.015;
     cloudMesh.rotation.y = elapsedTime * 0.022;
 
-    nodeGroup.children.forEach((child, idx) => {
-        if(child.geometry.type === "RingGeometry") {
-            const dynamicScale = 1.0 + Math.sin(elapsedTime * 3.5 + idx) * 0.4;
-            child.scale.set(dynamicScale, dynamicScale, 1.0);
-            child.material.opacity = 0.5 - (dynamicScale - 0.6) / 0.8;
-        }
-    });
-
-    // 飞线更新算法：平滑重绘线段顶点的空间位置
+    // Advanced Mesh Rebuilding Loop for Flying Arc Segments
     for(let i = telemetryArcs.length - 1; i >= 0; i--) {
         const arc = telemetryArcs[i];
         arc.progress += arc.speed;
@@ -448,27 +423,26 @@ function mainExecutionLoop() {
             telemetryArcs.splice(i, 1);
             deployArc();
         } else {
-            const positions = arc.lineMesh.geometry.attributes.position.array;
+            const points = [];
             
-            // 顺向更新构成该段完整流光线段的所有顶点
-            for(let j = 0; j < segmentPoints; j++) {
-                const ratio = j / (segmentPoints - 1);
-                // 线段长度根据参数平滑延伸和收尾
+            // Re-sample specific points on the mathematical curve for the current timeframe
+            for(let j = 0; j <= segmentPoints; j++) {
+                const ratio = j / segmentPoints;
                 let t = arc.progress - arc.lineLengthRatio * (1 - ratio);
                 t = Math.max(0, Math.min(1, t)); 
-                
-                const pos = arc.curve.getPointAt(t);
-                positions[j * 3] = pos.x;
-                positions[j * 3 + 1] = pos.y;
-                positions[j * 3 + 2] = pos.z;
+                points.push(arc.curve.getPointAt(t));
             }
-            arc.lineMesh.geometry.attributes.position.needsUpdate = true;
             
-            // 出界平滑淡出
+            // Dispose old geometry and swap to prevent any WebGL memory leakages
+            const oldGeo = arc.lineMesh.geometry;
+            const subPath = new THREE.CatmullRomCurve3(points);
+            arc.lineMesh.geometry = new THREE.TubeGeometry(subPath, 12, 0.014, 4, false);
+            oldGeo.dispose();
+            
             if(arc.progress > 1) {
-                arc.lineMesh.material.opacity = ((1 + arc.lineLengthRatio) - arc.progress) / arc.lineLengthRatio;
+                arc.lineMesh.material.opacity = (((1 + arc.lineLengthRatio) - arc.progress) / arc.lineLengthRatio) * 0.9;
             } else {
-                arc.lineMesh.material.opacity = 0.85;
+                arc.lineMesh.material.opacity = 0.9;
             }
         }
     }
