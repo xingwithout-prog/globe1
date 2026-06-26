@@ -2,304 +2,468 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Minisforum Global Network</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMAX Autonomous Global Intelligence Matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
---bg:#020510;
---surface:rgba(12,15,35,0.8);
---accent:#00c6ff;
---accent2:#7b2fff;
---gold:#f5a623;
---text:#e8ecf4;
---muted:#7a8099;
---border:rgba(255,255,255,0.06);
---glow:0 0 60px rgba(0,180,255,0.15);
+:root {
+    --neon-cyan: #00f0ff;
+    --neon-blue: #0044ff;
+    --neon-purple: #9d00ff;
+    --glass-bg: rgba(6, 10, 26, 0.55);
+    --glass-border: rgba(0, 240, 255, 0.12);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body{min-height:100vh}
 
-/* 星空背景 */
-.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.stars canvas{width:100%;height:100%}
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+html, body { width: 100%; height: 100%; background: #02040a; font-family: 'Rajdhani', sans-serif; overflow: hidden; color: #e2e8f0; }
 
-/* 主容器 */
-.app{position:relative;z-index:1;display:flex;width:100%;min-height:100vh}
-.globe-panel{flex:1;position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#globe-host{width:100%;height:100%;position:absolute;top:0;left:0}
-.globe-tag{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;font-size:12px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--muted);background:rgba(2,5,16,0.7);padding:8px 22px;border-radius:30px;border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);white-space:nowrap}
-.globe-tag em{font-style:normal;color:var(--accent);font-weight:700}
+/* 3D 渲染画布全屏背景 */
+#webgl-main { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-/* 数据面板 */
-.data-panel{width:460px;min-width:460px;padding:40px 32px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(180deg,rgba(8,10,28,0.95) 0%,rgba(4,6,18,0.98) 100%);border-left:1px solid var(--border);z-index:2;position:relative}
-.data-panel::before{content:'';position:absolute;top:0;left:-1px;width:1px;height:120px;background:linear-gradient(180deg,var(--accent),transparent);opacity:0.5}
-.data-panel::-webkit-scrollbar{width:3px}
-.data-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:2px}
+/* 科幻悬浮 HUD 框架 */
+.hud-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; display: grid; grid-template-columns: 400px 1fr 400px; grid-template-rows: 90px 1fr; padding: 24px; gap: 24px; }
+.hud-overlay * { pointer-events: auto; }
 
-/* 标题区 */
-.header .eyebrow{font-size:11px;letter-spacing:5px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;font-weight:600}
-.header h2{font-size:32px;font-weight:700;line-height:1.15;letter-spacing:-0.5px}
-.header h2 .grad{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+/* 玻璃态面板基础样式 */
+.glass-panel { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 24px; box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.03), 0 20px 50px rgba(0,0,0,0.6); position: relative; }
+.glass-panel::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); }
 
-/* KPI卡片网格 */
-.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 16px;position:relative;overflow:hidden;transition:all 0.35s ease;cursor:default}
-.kpi-card:hover{transform:translateY(-3px);box-shadow:var(--glow);border-color:rgba(255,255,255,0.15)}
-.kpi-card .icon{font-size:20px;margin-bottom:8px}
-.kpi-card .value{font-size:30px;font-weight:700;line-height:1;letter-spacing:-1px}
-.kpi-card .value .num{background:linear-gradient(180deg,#ffffff 0%,#a0c4ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kpi-card .label{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:2px;text-transform:uppercase;font-weight:500}
-.kpi-card .delta{font-size:11px;margin-top:7px;font-weight:600;color:#34d399}
-.kpi-card .pulse-dot{position:absolute;top:12px;right:12px;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent);animation:softPulse 2.4s ease-in-out infinite}
-.kpi-card:nth-child(2) .pulse-dot{background:var(--accent2);box-shadow:0 0 14px var(--accent2);animation-delay:0.6s}
-@keyframes softPulse{0%,100%{transform:scale(1);opacity:0.8}50%{transform:scale(1.8);opacity:0.3}}
+/* 顶部主标题 */
+.header-panel { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; height: 100%; padding: 0 30px; }
+.brand-zone h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: 4px; color: #fff; }
+.brand-zone h1 span { color: var(--neon-cyan); text-shadow: 0 0 15px var(--neon-cyan); }
+.brand-zone p { font-size: 12px; letter-spacing: 5px; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+.system-status { display: flex; align-items: center; gap: 20px; font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--neon-cyan); }
+.status-pulse { width: 8px; height: 8px; background: var(--neon-cyan); border-radius: 50%; box-shadow: 0 0 12px var(--neon-cyan); animation: pulse 1.5s infinite; }
 
-/* 区域分布 */
-.region-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 16px}
-.region-box h4{font-size:12px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;font-weight:600}
-.region-row{margin-bottom:10px}
-.region-row .info{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;font-weight:500}
-.region-row .info .pct{color:var(--accent);font-weight:700}
-.region-row .track{height:6px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden}
-.region-row .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0;transition:width 2s cubic-bezier(0.16,1,0.3,1);position:relative}
-.region-row .fill::after{content:'';position:absolute;right:0;top:-2px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 16px var(--accent)}
+/* 左侧控制面板：核心矩阵数据 */
+.left-sidebar { grid-column: 1; display: flex; flex-direction: column; gap: 20px; }
+.panel-title { font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 2px; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+.panel-title::before { content: ''; width: 4px; height: 14px; background: var(--neon-cyan); display: inline-block; box-shadow: 0 0 8px var(--neon-cyan); }
 
-/* 实时动态 */
-.live-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 16px;flex:1}
-.live-box h4{font-size:12px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600;display:flex;align-items:center;gap:8px}
-.live-dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399;animation:softPulse 1.6s ease-in-out infinite}
-.feed-list{list-style:none;display:flex;flex-direction:column;gap:6px}
-.feed-list li{padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.025);font-size:12px;color:#b0b8d0;display:flex;align-items:center;gap:6px;animation:slideUp 0.45s ease}
-.feed-list li .flag{font-size:15px;flex-shrink:0}
-.feed-list li .act{color:var(--accent);font-weight:600;margin:0 2px}
-.feed-list li .time{margin-left:auto;font-size:10px;color:#555;flex-shrink:0}
-@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.metric-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; position: relative; }
+.metric-card .label { font-size: 11px; color: #64748b; letter-spacing: 1px; text-transform: uppercase; }
+.metric-card .value { font-family: 'Orbitron', sans-serif; font-size: 24px; color: #fff; font-weight: 600; margin-top: 6px; }
+.metric-card .value span { color: var(--neon-cyan); }
 
-/* 移动端 */
-@media(max-width:900px){
-body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.app{flex-direction:column;min-height:auto}
-.globe-panel{position:relative;top:auto;height:50vh;min-height:340px;flex:none}
-.data-panel{width:100%;min-width:100%;padding:24px 16px 40px;gap:14px}
-.header h2{font-size:24px}
-.kpi-card .value{font-size:24px}
-.globe-tag{font-size:10px;bottom:14px;padding:6px 14px;letter-spacing:3px}
-}
-@media(max-width:480px){
-.globe-panel{height:42vh;min-height:280px}
-.kpi-grid{gap:8px}
-.kpi-card{padding:12px 10px}
-.kpi-card .value{font-size:20px}
-.kpi-card .icon{font-size:16px}
+/* 进度条级联 */
+.chart-box { margin-top: 10px; }
+.progress-container { margin-bottom: 14px; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
+.progress-bar-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan)); width: 0; transition: width 2s cubic-bezier(0.075, 0.82, 0.165, 1); box-shadow: 0 0 8px var(--neon-cyan); }
+
+/* 右侧控制面板：实时量子节点数据反馈 */
+.right-sidebar { grid-column: 3; display: flex; flex-direction: column; gap: 20px; }
+.log-stream { list-style: none; display: flex; flex-direction: column; gap: 10px; height: 100%; overflow: hidden; }
+.log-item { background: rgba(0, 240, 255, 0.02); border: 1px solid rgba(0, 240, 255, 0.04); padding: 12px; border-radius: 8px; font-size: 12px; animation: enterRow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; position: relative; }
+.log-item .tag { font-family: 'Orbitron', sans-serif; color: var(--neon-cyan); font-weight: 600; margin-right: 6px; }
+.log-item .meta { display: flex; justify-content: space-between; margin-top: 6px; color: #64748b; font-size: 11px; }
+
+@keyframes enterRow { from { opacity: 0; transform: translateY(-15px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 18px var(--neon-cyan); } }
+
+/* 响应式降级 */
+@media(max-width: 1200px) {
+    .hud-overlay { grid-template-columns: 1fr; grid-template-rows: auto; overflow-y: auto; pointer-events: auto; }
+    .hud-overlay * { pointer-events: auto; }
+    .right-sidebar, .left-sidebar { grid-column: 1; }
+    #webgl-main { position: fixed; }
 }
 </style>
 </head>
 <body>
 
-<div class="stars"><canvas id="starsCanvas"></canvas></div>
+<div id="webgl-main"></div>
 
-<div class="app">
-<div class="globe-panel">
-<div id="globe-host"></div>
-<div class="globe-tag">🌐 <em>83+</em> Countries &nbsp;·&nbsp; <em>12,600+</em> Partners</div>
-</div>
+<div class="hud-overlay">
+    <header class="glass-panel header-panel">
+        <div class="brand-zone">
+            <h1>BMAX<span>.</span>INTELLIGENCE</h1>
+            <p>Global Edge AI Computing Cluster Telemetry</p>
+        </div>
+        <div class="system-status">
+            <span class="status-pulse"></span>
+            <span>QUANTUM LINK: ACTIVE</span>
+        </div>
+    </header>
 
-<div class="data-panel">
-<div class="header">
-<div class="eyebrow">Global Business Network</div>
-<h2>Real‑Time <span class="grad">Data</span> Command</h2>
-</div>
+    <div class="left-sidebar">
+        <div class="glass-panel" style="flex: 1;">
+            <h3 class="panel-title">Global Operational Scale</h3>
+            <div class="grid-metrics">
+                <div class="metric-card">
+                    <div class="label">AI Nodes Online</div>
+                    <div class="value counter" data-target="3240">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">Throughput Rate</div>
+                    <div class="value"><span class="counter" data-target="94.8">0</span><span>%</span></div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">Active Countries</div>
+                    <div class="value counter" data-target="85">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">Total Compute (TFLOPs)</div>
+                    <div class="value counter" data-target="8942">0</div>
+                </div>
+            </div>
+        </div>
 
-<div class="kpi-grid">
-<div class="kpi-card"><div class="icon">🏢</div><div class="value"><span class="num counter" data-target="12600">12600</span>+</div><div class="label">Global Partners</div><div class="delta">▲ +18.5%</div><div class="pulse-dot"></div></div>
-<div class="kpi-card"><div class="icon">📦</div><div class="value"><span class="num counter" data-target="3.85">3.85</span>M</div><div class="label">Monthly Shipments</div><div class="delta">▲ +12.3%</div><div class="pulse-dot"></div></div>
-<div class="kpi-card"><div class="icon">👥</div><div class="value"><span class="num counter" data-target="2300">2300</span>K+</div><div class="label">Enterprise Clients</div><div class="delta">▲ +22.7%</div></div>
-<div class="kpi-card"><div class="icon">⭐</div><div class="value"><span class="num counter" data-target="99.7">99.7</span>%</div><div class="label">Satisfaction</div><div class="delta">▲ Leading</div></div>
-</div>
+        <div class="glass-panel" style="flex: 1.2;">
+            <h3 class="panel-title">Hardware Segment Allocation</h3>
+            <div class="chart-box">
+                <div class="progress-container">
+                    <div class="progress-labels"><span>MaxMini (AI Edge PC Series)</span><span>48%</span></div>
+                    <div class="progress-bar-track"><div class="progress-bar-fill" data-width="48"></div></div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-labels"><span>MaxBook (High-Performance Laptop)</span><span>34%</span></div>
+                    <div class="progress-bar-track"><div class="progress-bar-fill" data-width="34"></div></div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-labels"><span>MaxPad (Advanced Digital Computing)</span><span>18%</span></div>
+                    <div class="progress-bar-track"><div class="progress-bar-fill" data-width="18"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="region-box">
-<h4>📊 Regional Distribution</h4>
-<div class="region-row"><div class="info"><span>🌍 Europe</span><span class="pct">35%</span></div><div class="track"><div class="fill" data-width="35"></div></div></div>
-<div class="region-row"><div class="info"><span>🌎 North America</span><span class="pct">30%</span></div><div class="track"><div class="fill" data-width="30"></div></div></div>
-<div class="region-row"><div class="info"><span>🌏 Asia Pacific</span><span class="pct">20%</span></div><div class="track"><div class="fill" data-width="20"></div></div></div>
-<div class="region-row"><div class="info"><span>🌍 Middle East & Africa</span><span class="pct">10%</span></div><div class="track"><div class="fill" data-width="10"></div></div></div>
-<div class="region-row"><div class="info"><span>🌎 Latin America</span><span class="pct">5%</span></div><div class="track"><div class="fill" data-width="5"></div></div></div>
-</div>
-
-<div class="live-box">
-<h4><span class="live-dot"></span> Live Transactions</h4>
-<ul class="feed-list" id="feedList">
-<li><span class="flag">🇩🇪</span> Berlin <span class="act">New Order</span> $128K <span class="time">Just now</span></li>
-<li><span class="flag">🇺🇸</span> New York <span class="act">Bulk</span> $450K <span class="time">1m</span></li>
-<li><span class="flag">🇬🇧</span> London <span class="act">Renewal</span> 5Y <span class="time">3m</span></li>
-<li><span class="flag">🇫🇷</span> Paris <span class="act">Distributor</span> Signed <span class="time">6m</span></li>
-</ul>
-</div>
-</div>
+    <div class="right-sidebar">
+        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column;">
+            <h3 class="panel-title">Live Quantum Link Telemetry</h3>
+            <ul class="log-stream" id="logStream">
+                <li class="log-item">
+                    <div><span class="tag">[SYS_OK]</span> Zhengzhou HQ Connected to Frankfurt Node</div>
+                    <div class="meta"><span>PACKET SIZE: 2048kb</span><span>SYNCED</span></div>
+                </li>
+                <li class="log-item">
+                    <div><span class="tag">[B2B_EXEC]</span> 450x MaxMini Pro Dispatched to Los Angeles</div>
+                    <div class="meta"><span>ROUTE: CN -> US_WEST</span><span>IN TRANSIT</span></div>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <script>
-// ============ 星空背景 ============
-(function(){
-var cv=document.getElementById('starsCanvas');
-var ctx=cv.getContext('2d');
-var stars=[];
-function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight}
-resize();window.addEventListener('resize',resize);
-for(var i=0;i<260;i++){stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.6+0.2,s:Math.random()*0.012+0.004,o:Math.random(),od:1})}
-function draw(){
-ctx.clearRect(0,0,cv.width,cv.height);
-stars.forEach(function(s){
-s.o+=s.od*s.s;if(s.o>=1){s.o=1;s.od=-1}if(s.o<=0.1){s.o=0.1;s.od=1}
-ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(160,190,240,'+s.o+')';ctx.fill()
+// Web UI Interface Logic
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        document.querySelectorAll('.counter').forEach(el => {
+            const target = parseFloat(el.getAttribute('data-target'));
+            const isFloat = target % 1 !== 0;
+            let current = 0;
+            const step = target / 50;
+            const run = () => {
+                current += step;
+                if(current < target) {
+                    el.innerText = isFloat ? current.toFixed(1) : Math.ceil(current).toLocaleString();
+                    requestAnimationFrame(run);
+                } else {
+                    el.innerText = isFloat ? target.toFixed(1) : target.toLocaleString();
+                }
+            };
+            run();
+        });
+        document.querySelectorAll('.progress-bar-fill').forEach(b => {
+            b.style.width = b.getAttribute('data-width') + '%';
+        });
+    }, 400);
+
+    // Dynamic Telemetry Data Generator
+    const locations = ["London, UK", "Tokyo, JP", "Paris, FR", "São Paulo, BR", "Madrid, ES", "Sydney, AU", "Singapore, SG"];
+    const actions = [
+        { t: "[B2B_EXEC]", m: "Bulk Batch: 300x MaxBook Deployed", r: "CN -> EMEA_HUB" },
+        { t: "[SYS_OK]", m: "Telemetry Handshake Completed Successfully", r: "EDGE_NODE_ACK" },
+        { t: "[DIST_REQ]", m: "Inventory Balancing Triggered: MaxPad Fleet", r: "APAC_LOGISTICS" }
+    ];
+    setInterval(() => {
+        const loc = locations[Math.floor(Math.random() * locations.length)];
+        const act = actions[Math.floor(Math.random() * actions.length)];
+        const li = document.createElement('li');
+        li.className = 'log-item';
+        li.innerHTML = `<div><span class="tag">${act.t}</span> ${loc} - ${act.m}</div><div class="meta"><span>ROUTING: ${act.r}</span><span>SECURE LINK</span></div>`;
+        const container = document.getElementById('logStream');
+        container.prepend(li);
+        if(container.children.length > 5) container.removeChild(container.lastChild);
+    }, 4000);
 });
-requestAnimationFrame(draw)
-}
-draw();
-})();
-
-// ============ 数据动画 ============
-(function(){
-var barsDone=false;
-function animCounters(){
-document.querySelectorAll('.counter').forEach(function(el){
-var t=parseFloat(el.getAttribute('data-target'));
-var dec=t%1!==0;
-var st=performance.now();
-function up(now){
-var p=Math.min((now-st)/1600,1);
-var ease=1-Math.pow(2,-10*p);
-var cur=t*ease;
-el.textContent=dec?cur.toFixed(1):t>=1000?Math.floor(cur).toLocaleString('en-US'):Math.floor(cur);
-if(p<1)requestAnimationFrame(up);else el.textContent=dec?t.toFixed(1):t>=1000?Math.floor(t).toLocaleString('en-US'):Math.floor(t)
-}
-requestAnimationFrame(up)
-})
-}
-function animBars(){
-if(barsDone)return;barsDone=true;
-document.querySelectorAll('.fill').forEach(function(b,i){setTimeout(function(){b.style.width=b.getAttribute('data-width')+'%'},i*180)})
-}
-setTimeout(function(){animCounters();animBars()},400);
-
-var entries=[{f:'🇺🇸',l:'New York',a:'Bulk',d:'$450K',t:'Now'},{f:'🇬🇧',l:'London',a:'Order',d:'$215K',t:'Now'},{f:'🇩🇪',l:'Berlin',a:'Sign',d:'New',t:'Now'},{f:'🇫🇷',l:'Paris',a:'Renew',d:'5Y',t:'Now'},{f:'🇨🇦',l:'Toronto',a:'Deal',d:'$380K',t:'Now'},{f:'🇮🇹',l:'Milan',a:'Order',d:'$92K',t:'Now'},{f:'🇪🇸',l:'Madrid',a:'Sign',d:'New',t:'Now'},{f:'🇳🇱',l:'Amsterdam',a:'Bulk',d:'$156K',t:'Now'}];
-setInterval(function(){
-var e=entries[Math.floor(Math.random()*entries.length)];
-var li=document.createElement('li');
-li.innerHTML='<span class="flag">'+e.f+'</span> '+e.l+' <span class="act">'+e.a+'</span> '+e.d+' <span class="time">'+e.t+'</span>';
-var list=document.getElementById('feedList');
-if(list){list.insertBefore(li,list.firstChild);if(list.children.length>6)list.removeChild(list.lastChild)}
-},3800);
-})();
 </script>
 
 <script type="importmap">
-{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+{
+    "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+}
 </script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-const host=document.getElementById('globe-host');
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(42,2,0.1,100);
-camera.position.set(0,0.2,4.5);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.4;
-host.appendChild(renderer.domElement);
+const canvasContainer = document.getElementById('webgl-main');
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x02040a, 0.03);
 
-function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
-resize();window.addEventListener('resize',resize);window.addEventListener('orientationchange',()=>setTimeout(resize,200));
+const camera = new THREE.PerspectiveCamera(40, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 100);
+camera.position.set(0, 0.8, 4.2);
 
-// 光照
-scene.add(new THREE.AmbientLight(0x223355,2.8));
-const key=new THREE.DirectionalLight(0xffffff,3);key.position.set(5,3,5);scene.add(key);
-const fill=new THREE.DirectionalLight(0x335577,1.2);fill.position.set(-3,-1,-3);scene.add(fill);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+canvasContainer.appendChild(renderer.domElement);
 
-const globeGrp=new THREE.Group();scene.add(globeGrp);
-const tex=new THREE.TextureLoader();
+// --- TIER 1 POST PROCESSING 管线配置（核心质感来源） ---
+const renderPass = new RenderPass(scene, camera);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.6, 0.4, 0.1);
+bloomPass.threshold = 0.05; // 降低阈值，令流光和发光网点完美产生物理溢光
+bloomPass.strength = 1.8;   // 提高环境发光强度
+bloomPass.radius = 0.6;
 
-// 地球
-const earthGeo=new THREE.SphereGeometry(1.22,80,80);
-const earthMat=new THREE.MeshPhongMaterial({
-map:tex.load('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blue_Marble_2002.png/1280px-Blue_Marble_2002.png'),
-bumpMap:tex.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
-bumpScale:0.05,
-specular:new THREE.Color(0x111122),
-shininess:6,
-emissive:new THREE.Color(0x000011),
-emissiveIntensity:0.15,
+const composer = new EffectComposer(renderer);
+composer.addPass(renderPass);
+composer.addPass(bloomPass);
+
+// --- 高级演播厅级别光照系统 ---
+const ambientLight = new THREE.AmbientLight(0x0a1128, 4.0);
+scene.add(ambientLight);
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
+keyLight.position.set(5, 3, 5);
+scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(0x00f0ff, 3.0); // 侧方高亮科技蓝切光
+rimLight.position.set(-5, -2, -5);
+scene.add(rimLight);
+
+// --- 构建赛博地球（Cyber PBR Structure） ---
+const textureLoader = new THREE.TextureLoader();
+const earthRadius = 1.15;
+
+// Core 地核（黑曜石暗金属质感）
+const earthGeo = new THREE.SphereGeometry(earthRadius, 64, 64);
+const earthMat = new THREE.MeshStandardMaterial({
+    map: textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'),
+    bumpMap: textureLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
+    bumpScale: 0.05,
+    roughnessMap: textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg'),
+    roughness: 0.3,
+    metalness: 0.85
 });
-const earth=new THREE.Mesh(earthGeo,earthMat);globeGrp.add(earth);
+earthMat.color.setHex(0x111625); // 压暗地表底色，突出反射与上层光栅
+const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+scene.add(earthMesh);
 
-// 云层
-const cloudGeo=new THREE.SphereGeometry(1.235,80,80);
-const cloudMat=new THREE.MeshPhongMaterial({map:tex.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),transparent:true,opacity:0.38,blending:THREE.AdditiveBlending,depthWrite:false});
-const clouds=new THREE.Mesh(cloudGeo,cloudMat);globeGrp.add(clouds);
+// Layer 2: 全息立体经纬网格层（让地球充满多维透视科技感）
+const gridGeo = new THREE.SphereGeometry(earthRadius * 1.015, 45, 45);
+const gridMat = new THREE.MeshBasicMaterial({
+    color: 0x00f0ff,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.06,
+    blending: THREE.AdditiveBlending
+});
+const gridMesh = new THREE.Mesh(gridGeo, gridMat);
+earthMesh.add(gridMesh);
 
-// 城市光点
-function llv(lat,lon,r){const p=(90-lat)*(Math.PI/180),t=(lon+180)*(Math.PI/180);return new THREE.Vector3(-r*Math.sin(p)*Math.cos(t),r*Math.cos(p),r*Math.sin(p)*Math.sin(t))}
-const cities=[
-{lat:40.71,lon:-74.01},{lat:37.77,lon:-122.42},{lat:34.05,lon:-118.24},{lat:47.61,lon:-122.33},
-{lat:51.51,lon:-0.13},{lat:48.86,lon:2.35},{lat:52.52,lon:13.40},{lat:52.37,lon:4.90},
-{lat:40.42,lon:-3.70},{lat:41.90,lon:12.50},{lat:59.33,lon:18.07},{lat:55.75,lon:37.62},
-{lat:25.20,lon:55.27},{lat:31.23,lon:121.47},{lat:35.68,lon:139.76},{lat:37.57,lon:126.98},
-{lat:1.35,lon:103.82},{lat:22.32,lon:114.17},{lat:13.75,lon:100.50},{lat:19.08,lon:72.88},
-{lat:-33.87,lon:151.21},{lat:-23.55,lon:-46.63},{lat:-34.60,lon:-58.38},{lat:43.65,lon:-79.38},
-{lat:41.01,lon:28.98},{lat:-26.20,lon:28.05},{lat:6.45,lon:3.40},{lat:24.71,lon:46.68},
+// Layer 3: 云层流动
+const cloudGeo = new THREE.SphereGeometry(earthRadius * 1.03, 64, 64);
+const cloudMat = new THREE.MeshPhongMaterial({
+    map: textureLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),
+    transparent: true,
+    opacity: 0.22,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+});
+const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+scene.add(cloudMesh);
+
+// --- 坐标解析与节点投影 ---
+function convertLatLon(lat, lon, radius) {
+    const phi = (90 - lat) * (Math.PI / 180);
+    const theta = (lon + 180) * (Math.PI / 180);
+    return new THREE.Vector3(
+        -radius * Math.sin(phi) * Math.cos(theta),
+        radius * Math.cos(phi),
+        radius * Math.sin(phi) * Math.sin(theta)
+    );
+}
+
+const clusterHubs = [
+    {lat: 40.71, lon: -74.01}, {lat: 51.51, lon: -0.13}, {lat: 48.86, lon: 2.35},
+    {lat: 25.20, lon: 55.27},  {lat: 31.23, lon: 121.47}, {lat: 35.68, lon: 139.76},
+    {lat: -33.87, lon: 151.21}, {lat: -23.55, lon: -46.63}, {lat: 34.76, lon: 113.62} // 郑州中心
 ];
-const cps=cities.map(c=>({pos:llv(c.lat,c.lon,1.24)}));
-const cityGrp=new THREE.Group();globeGrp.add(cityGrp);
-const glowTex=(()=>{const cv=document.createElement('canvas');cv.width=32;cv.height=32;const cx=cv.getContext('2d');const g=cx.createRadialGradient(16,16,0,16,16,16);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(0.15,'rgba(255,255,255,0.9)');g.addColorStop(0.4,'rgba(100,180,255,0.5)');g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(0,0,32,32);return new THREE.CanvasTexture(cv)})();
-cps.forEach(cp=>{
-const d=new THREE.Mesh(new THREE.SphereGeometry(0.022,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));d.position.copy(cp.pos);cityGrp.add(d);
-const g=new THREE.Mesh(new THREE.PlaneGeometry(0.08,0.08),new THREE.ShaderMaterial({vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'varying vec2 vUv;uniform vec3 uColor;void main(){float d=length(vUv-0.5)*2.0;gl_FragColor=vec4(uColor,smoothstep(1.0,0.0,d)*0.85);}',uniforms:{uColor:{value:new THREE.Color(0x44ccff)}},transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));g.position.copy(cp.pos);g.lookAt(new THREE.Vector3(0,0,0));cityGrp.add(g)
+
+const nodeGroup = new THREE.Group();
+earthMesh.add(nodeGroup);
+
+clusterHubs.forEach(hub => {
+    const targetPos = convertLatLon(hub.lat, hub.lon, earthRadius * 1.01);
+    
+    // 固态粒子核心
+    const core = new THREE.Mesh(
+        new THREE.SphereGeometry(0.012, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0x00f0ff, blending: THREE.AdditiveBlending })
+    );
+    core.position.copy(targetPos);
+    nodeGroup.add(core);
+
+    // 动态雷达开合光圈
+    const ring = new THREE.Mesh(
+        new THREE.RingGeometry(0.015, 0.03, 16),
+        new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6, side: THREE.DoubleSide, blending: THREE.AdditiveBlending })
+    );
+    ring.position.copy(targetPos);
+    ring.lookAt(new THREE.Vector3(0,0,0));
+    nodeGroup.add(ring);
 });
 
-// 飞线
-const lineGrp=new THREE.Group();globeGrp.add(lineGrp);
-const flyLines=[];
-function mkLine(f,t,cl){const mid=new THREE.Vector3().addVectors(f,t).multiplyScalar(0.5);const ctrl=mid.normalize().multiplyScalar(1.24+f.distanceTo(t)*0.32);const cv=new THREE.QuadraticBezierCurve3(f.clone(),ctrl,t.clone());const tube=new THREE.Mesh(new THREE.TubeGeometry(cv,28,0.006,8,false),new THREE.MeshBasicMaterial({color:cl,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending,depthWrite:false}));const pts=[];for(let i=0;i<4;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(0.015,6,6),new THREE.MeshBasicMaterial({color:0xffffff,blending:THREE.AdditiveBlending,depthWrite:false}));tube.add(p);pts.push({mesh:p,progress:i/4,speed:0.0035+Math.random()*0.007})}lineGrp.add(tube);return{tube,pts,cv,birth:performance.now(),life:5000+Math.random()*7000}}
-function spawn(){if(flyLines.length>=22)return;const i1=Math.floor(Math.random()*cps.length);let i2=Math.floor(Math.random()*cps.length);while(i2===i1)i2=Math.floor(Math.random()*cps.length);flyLines.push(mkLine(cps[i1].pos,cps[i2].pos,new THREE.Color().setHSL(0.54+Math.random()*0.25,0.95,0.48+Math.random()*0.35)))}
-for(let i=0;i<14;i++)spawn();
+// --- 量子微粒子拖尾飞线引擎（High-Texture Engine） ---
+const customLinesGroup = new THREE.Group();
+earthMesh.add(customLinesGroup);
+let telemetryArcs = [];
+const particlesPerArc = 25; // 每一条流光由25个独立的渐变高光粒子矩阵组成
 
-// 外层粒子环
-const ringGrp=new THREE.Group();globeGrp.add(ringGrp);
-const ringCount=300;const rg=new THREE.BufferGeometry();const rp=new Float32Array(ringCount*3);const rc=new Float32Array(ringCount*3);
-for(let i=0;i<ringCount;i++){const a=(i/ringCount)*Math.PI*2;const rad=1.55+Math.random()*0.25;const y=(Math.random()-0.5)*0.6;rp[i*3]=Math.cos(a)*rad;rp[i*3+1]=y;rp[i*3+2]=Math.sin(a)*rad;const cl=new THREE.Color().setHSL(0.55+Math.random()*0.15,0.85,0.5+Math.random()*0.4);rc[i*3]=cl.r;rc[i*3+1]=cl.g;rc[i*3+2]=cl.b}
-rg.setAttribute('position',new THREE.BufferAttribute(rp,3));rg.setAttribute('color',new THREE.BufferAttribute(rc,3));
-ringGrp.add(new THREE.Points(rg,new THREE.PointsMaterial({size:0.025,map:glowTex,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.75})));
+function buildQuantumArc(start, end) {
+    const distance = start.distanceTo(end);
+    const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+    const control = mid.normalize().multiplyScalar(earthRadius + distance * 0.35);
+    const curve = new THREE.QuadraticBezierCurve3(start, control, end);
+    
+    // 渲染隐形底层轨道支持深邃度
+    const trackGeo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(50));
+    const trackMat = new THREE.LineBasicMaterial({ color: 0x0044ff, transparent: true, opacity: 0.08 });
+    const track = new THREE.Line(trackGeo, trackMat);
+    customLinesGroup.add(track);
 
-// 脉冲光环
-const pulseRing=new THREE.Mesh(new THREE.TorusGeometry(1.48,0.008,16,120),new THREE.MeshBasicMaterial({color:0x44aaff,transparent:true,opacity:0.35,blending:THREE.AdditiveBlending,depthWrite:false}));globeGrp.add(pulseRing);
-const pulseRing2=new THREE.Mesh(new THREE.TorusGeometry(1.52,0.005,16,120),new THREE.MeshBasicMaterial({color:0x8844ff,transparent:true,opacity:0.25,blending:THREE.AdditiveBlending,depthWrite:false}));globeGrp.add(pulseRing2);
+    // 实例化粒子群构建“流体彗星拖尾”
+    const pGroup = new THREE.Group();
+    const pGeo = new THREE.SphereGeometry(0.01, 6, 6);
+    const swarm = [];
 
-// 轨道控制
-const controls=new OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;controls.dampingFactor=0.07;controls.autoRotate=true;controls.autoRotateSpeed=0.25;controls.minDistance=2.5;controls.maxDistance=7;controls.enablePan=false;
+    for(let i = 0; i < particlesPerArc; i++) {
+        // 头宽尾窄，头亮尾暗的数理映射
+        const ratio = i / (particlesPerArc - 1);
+        const pMat = new THREE.MeshBasicMaterial({
+            color: new THREE.Color(0x00f0ff).lerp(new THREE.Color(0x9d00ff), 1 - ratio),
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const mesh = new THREE.Mesh(pGeo, pMat);
+        // 基于链式比例实现物理缩放缩进
+        mesh.scale.setScalar(Math.pow(ratio, 2) * 1.5 + 0.2); 
+        pGroup.add(mesh);
+        swarm.push({ mesh: mesh, offsetRatio: ratio * 0.12 }); // 控制尾翼拖拽长度比例
+    }
+    
+    customLinesGroup.add(pGroup);
 
-let lastSpawn=0;
-function anim(ts){
-requestAnimationFrame(anim);
-if(ts-lastSpawn>2800&&flyLines.length<22){spawn();lastSpawn=ts}
-for(let i=flyLines.length-1;i>=0;i--){
-const l=flyLines[i],age=ts-l.birth;
-l.tube.material.opacity=age<700?(age/700)*0.7:age>l.life-700?Math.max(0,((l.life-age)/700)*0.7):0.7;
-l.pts.forEach(p=>{p.progress+=p.speed;if(p.progress>1)p.progress-=1;p.mesh.position.copy(l.cv.getPointAt(p.progress).clone().sub(l.tube.position))});
-if(age>l.life){lineGrp.remove(l.tube);l.tube.geometry.dispose();l.tube.material.dispose();l.pts.forEach(p=>{p.mesh.geometry.dispose();p.mesh.material.dispose()});flyLines.splice(i,1)}
+    return {
+        track: track,
+        pGroup: pGroup,
+        swarm: swarm,
+        curve: curve,
+        progress: 0,
+        speed: 0.006 + Math.random() * 0.004
+    };
 }
-ringGrp.rotation.y+=0.0006;ringGrp.rotation.x+=0.0002;
-pulseRing.rotation.x+=0.003;pulseRing.rotation.y+=0.005;
-pulseRing2.rotation.z+=0.004;pulseRing2.rotation.x-=0.003;
-pulseRing.material.opacity=0.3+Math.sin(ts*0.001)*0.12;
-clouds.rotation.y+=0.00012;
-controls.update();renderer.render(scene,camera);
+
+function deployArc() {
+    if(telemetryArcs.length > 15) return;
+    const n1 = Math.floor(Math.random() * clusterHubs.length);
+    let n2 = Math.floor(Math.random() * clusterHubs.length);
+    while(n1 === n2) n2 = Math.floor(Math.random() * clusterHubs.length);
+
+    const p1 = convertLatLon(clusterHubs[n1].lat, clusterHubs[n1].lon, earthRadius);
+    const p2 = convertLatLon(clusterHubs[n2].lat, clusterHubs[n2].lon, earthRadius);
+    telemetryArcs.push(buildQuantumArc(p1, p2));
 }
-requestAnimationFrame(anim);
+for(let i = 0; i < 8; i++) deployArc();
+
+// --- 镜头控制与环境交互 ---
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.04;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.5; // 自转减缓，突出品质感
+controls.minDistance = 2.0;
+controls.maxDistance = 5.0;
+controls.enablePan = false;
+
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// --- 主同步渲染动力循环 ---
+const clock = new THREE.Clock();
+function mainExecutionLoop() {
+    requestAnimationFrame(mainExecutionLoop);
+    const elapsedTime = clock.getElapsedTime();
+
+    // 1. 地球核心与云层多工况自转错位（强化空间视差）
+    earthMesh.rotation.y = elapsedTime * 0.02;
+    cloudMesh.rotation.y = elapsedTime * 0.028;
+
+    // 2. 雷达光圈波纹数理动画
+    nodeGroup.children.forEach((child, idx) => {
+        if(child.geometry.type === "RingGeometry") {
+            const dynamicScale = 1.0 + Math.sin(elapsedTime * 4.0 + idx) * 0.4;
+            child.scale.set(dynamicScale, dynamicScale, 1.0);
+            child.material.opacity = 0.6 - (dynamicScale - 0.6) / 0.8;
+        }
+    });
+
+    // 3. 量子流体粒子动态迭代
+    for(let i = telemetryArcs.length - 1; i >= 0; i--) {
+        const arc = telemetryArcs[i];
+        arc.progress += arc.speed;
+
+        if(arc.progress > 1 + 0.15) { // 加上拖尾出界判定
+            customLinesGroup.remove(arc.track);
+            customLinesGroup.remove(arc.pGroup);
+            arc.track.geometry.dispose();
+            arc.track.material.dispose();
+            arc.swarm.forEach(p => { p.mesh.geometry.dispose(); p.mesh.material.dispose(); });
+            telemetryArcs.splice(i, 1);
+            deployArc();
+        } else {
+            // 顺向更新粒子矩阵序列物理质感位置
+            arc.swarm.forEach(p => {
+                let currentT = arc.progress - p.offsetRatio;
+                currentT = Math.max(0, Math.min(1, currentT)); // 限制边界
+                const pos = arc.curve.getPointAt(currentT);
+                p.mesh.position.copy(pos);
+                
+                // 接近边缘时强制淡出
+                if(arc.progress > 1) {
+                    p.mesh.material.opacity = (1.15 - arc.progress) / 0.15;
+                } else {
+                    p.mesh.material.opacity = currentT > 0 ? 0.9 : 0;
+                }
+            });
+        }
+    }
+
+    controls.update();
+    // 使用后处理渲染器替换标准渲染器，呈现耀眼的电影级辉光
+    composer.render();
+}
+
+mainExecutionLoop();
 </script>
 </body>
 </html>
