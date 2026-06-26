@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BMAX Global Operations Matrix</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700;bold&display=swap" rel="stylesheet">
 <style>
 :root {
     --neon-red: #ff0044;
-    --neon-dark-red: #33000d;
-    --glass-bg: rgba(6, 2, 4, 0.75);
-    --glass-border: rgba(255, 0, 68, 0.15);
+    --neon-dark-red: #44000c;
+    --glass-bg: rgba(6, 2, 4, 0.85);
+    --glass-border: rgba(255, 0, 68, 0.25);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -23,14 +23,14 @@ html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdh
 .hud-wrapper { 
     position: relative; z-index: 10; width: 100%; min-height: 100vh; 
     pointer-events: none; display: grid; 
-    grid-template-columns: 380px 1fr 380px; grid-template-rows: 90px 1fr; padding: 24px; gap: 24px; 
+    grid-template-columns: 420px 1fr 420px; grid-template-rows: 100px 1fr; padding: 24px; gap: 24px; 
 }
 .hud-wrapper * { pointer-events: auto; }
 
 /* Holographic Glass Panel */
 .glass-panel { 
     background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 14px; 
-    backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 22px; 
+    backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 26px; 
     box-shadow: inset 0 0 20px rgba(255, 0, 68, 0.02), 0 15px 35px rgba(0,0,0,0.7); position: relative; 
 }
 .glass-panel::before { 
@@ -39,38 +39,38 @@ html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdh
 }
 
 /* Header */
-.header-panel { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; }
-.brand-zone h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 4px; color: #ffffff; }
+.header-panel { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; }
+.brand-zone h1 { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; letter-spacing: 4px; color: #ffffff; }
 .brand-zone h1 span { color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
-.brand-zone p { font-size: 11px; letter-spacing: 4px; color: #ffffff; text-transform: uppercase; margin-top: 2px; }
-.system-status { display: flex; align-items: center; gap: 12px; font-family: 'Orbitron', sans-serif; font-size: 12px; color: #ffffff; letter-spacing: 1px; }
-.status-pulse { width: 7px; height: 7px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 10px var(--neon-red); animation: pulse 1.5s infinite; }
+.brand-zone p { font-size: 14px; font-weight: 700; letter-spacing: 4px; color: #ffffff; text-transform: uppercase; margin-top: 4px; }
+.system-status { display: flex; align-items: center; gap: 14px; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 800; color: #ffffff; letter-spacing: 1px; }
+.status-pulse { width: 9px; height: 9px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 12px var(--neon-red); animation: pulse 1.5s infinite; }
 
 /* Layout Columns */
-.left-sidebar { grid-column: 1; display: flex; flex-direction: column; gap: 20px; }
-.right-sidebar { grid-column: 3; display: flex; flex-direction: column; gap: 20px; }
+.left-sidebar { grid-column: 1; display: flex; flex-direction: column; gap: 24px; }
+.right-sidebar { grid-column: 3; display: flex; flex-direction: column; gap: 24px; }
 
-.panel-title { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 2px; color: #ffffff; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.panel-title::before { content: ''; width: 3px; height: 12px; background: var(--neon-red); display: inline-block; box-shadow: 0 0 6px var(--neon-red); }
+.panel-title { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 2px; color: #ffffff; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.panel-title::before { content: ''; width: 4px; height: 16px; background: var(--neon-red); display: inline-block; box-shadow: 0 0 6px var(--neon-red); }
 
 /* Dashboard Cards */
-.grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.metric-card { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 14px; border-radius: 8px; }
-.metric-card .label { font-size: 11px; color: #ffffff; letter-spacing: 1px; text-transform: uppercase; }
-.metric-card .value { font-family: 'Orbitron', sans-serif; font-size: 22px; color: var(--neon-red); font-weight: 600; margin-top: 4px; }
+.grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.metric-card { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.04); padding: 18px; border-radius: 8px; }
+.metric-card .label { font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 1px; text-transform: uppercase; }
+.metric-card .value { font-family: 'Orbitron', sans-serif; font-size: 36px; color: var(--neon-red); font-weight: 900; margin-top: 6px; text-shadow: 0 0 10px rgba(255, 0, 68, 0.2); }
 
 /* Progress Bars */
-.progress-container { margin-bottom: 12px; }
-.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #ffffff; margin-bottom: 5px; }
-.progress-labels .data-pct { color: var(--neon-red); font-family: 'Orbitron', sans-serif; }
-.progress-bar-track { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
-.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-dark-red), var(--neon-red)); width: 0; transition: width 2s ease-out; box-shadow: 0 0 6px var(--neon-red); }
+.progress-container { margin-bottom: 18px; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+.progress-labels .data-pct { color: var(--neon-red); font-family: 'Orbitron', sans-serif; font-weight: 800; }
+.progress-bar-track { height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-dark-red), var(--neon-red)); width: 0; transition: width 2s ease-out; box-shadow: 0 0 8px var(--neon-red); }
 
 /* Logs Terminal */
-.log-stream { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.log-item { background: rgba(255, 0, 68, 0.01); border: 1px solid rgba(255, 0, 68, 0.03); padding: 10px; border-radius: 6px; font-size: 12px; color: #ffffff; animation: enterRow 0.4s ease-out forwards; }
-.log-item .tag { font-family: 'Orbitron', sans-serif; color: var(--neon-red); font-weight: 600; margin-right: 6px; }
-.log-item .meta { display: flex; justify-content: space-between; margin-top: 5px; color: #ffffff; font-size: 11px; opacity: 0.8; }
+.log-stream { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.log-item { background: rgba(255, 0, 68, 0.01); border: 1px solid rgba(255, 0, 68, 0.04); padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; color: #ffffff; animation: enterRow 0.4s ease-out forwards; }
+.log-item .tag { font-family: 'Orbitron', sans-serif; color: var(--neon-red); font-weight: 800; margin-right: 8px; }
+.log-item .meta { display: flex; justify-content: space-between; margin-top: 6px; color: #ffffff; font-size: 12px; opacity: 0.75; }
 
 @keyframes enterRow { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
@@ -80,7 +80,7 @@ html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdh
     body, html { overflow-y: auto; height: auto; }
     .hud-wrapper { display: flex; flex-direction: column; padding: 16px; gap: 16px; height: auto; }
     #webgl-main { position: fixed; height: 100vh; width: 100vw; top: 0; left: 0; }
-    .header-panel { order: 1; flex-direction: column; gap: 10px; text-align: center; padding: 16px; }
+    .header-panel { order: 1; flex-direction: column; gap: 12px; text-align: center; padding: 20px; }
     .mobile-view-gap { order: 2; height: 35vh; min-height: 240px; pointer-events: none; }
     .left-sidebar { order: 3; width: 100%; gap: 16px; }
     .right-sidebar { order: 4; width: 100%; gap: 16px; margin-bottom: 30px; }
@@ -239,7 +239,7 @@ canvasContainer.appendChild(renderer.domElement);
 
 const renderPass = new RenderPass(scene, camera);
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.1);
-bloomPass.threshold = 0.35;  
+bloomPass.threshold = 0.4;  
 bloomPass.strength = 0.6;   
 bloomPass.radius = 0.4;
 
@@ -316,7 +316,7 @@ function convertLatLon(lat, lon, radius) {
     );
 }
 
-// Pure Global Distribution Nodes (No domestic points)
+// Global Hub Nodes
 const clusterHubs = [
     {lat: 40.71, lon: -74.01}, {lat: 51.51, lon: -0.13}, {lat: 48.86, lon: 2.35},
     {lat: 25.20, lon: 55.27},  {lat: 35.68, lon: 139.76}, {lat: -33.87, lon: 151.21}, 
@@ -324,56 +324,55 @@ const clusterHubs = [
     {lat: 1.35, lon: 103.82}, {lat: 43.65, lon: -79.38}
 ];
 
-// High-Texture Bold Dynamic Line Segment Engine
+// 高阶高密度极细纯实体飞线引擎 (THREE.Line)
 const customLinesGroup = new THREE.Group();
 earthMesh.add(customLinesGroup);
 let telemetryArcs = [];
-const segmentPoints = 12; // Controls segment geometry smooth rendering
+const segmentPoints = 32; // 采样精度，保证细线绝对顺滑没有曲折感
 
-function buildThickLineArc(start, end) {
+function buildThinLineArc(start, end) {
     const distance = start.distanceTo(end);
     const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
     const control = mid.normalize().multiplyScalar(earthRadius + distance * 0.32);
     const curve = new THREE.QuadraticBezierCurve3(start, control, end);
     
-    // Create an initial template path
-    const dummyPoints = [];
-    for(let i=0; i<=segmentPoints; i++) dummyPoints.push(new THREE.Vector3());
-    const dummyPath = new THREE.CatmullRomCurve3(dummyPoints);
+    // 采用原生高性能 BufferGeometry 构建极细线条
+    const lineGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(segmentPoints * 3);
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     
-    // Use TubeGeometry with MeshBasicMaterial to support real physical thickness across platforms
-    const lineGeo = new THREE.TubeGeometry(dummyPath, 12, 0.014, 4, false); // Increased Thickness to 0.014 radius
-    const lineMat = new THREE.MeshBasicMaterial({
+    const lineMat = new THREE.LineBasicMaterial({
         color: 0xff0044,
         transparent: true,
         opacity: 0.9,
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
-    const lineMesh = new THREE.Mesh(lineGeo, lineMat);
+    const lineMesh = new THREE.Line(lineGeo, lineMat);
     customLinesGroup.add(lineMesh);
 
     return {
         lineMesh: lineMesh,
         curve: curve,
         progress: 0,
-        speed: 0.003 + Math.random() * 0.003, // Adjusted speed for smooth longer transitions
-        lineLengthRatio: 0.35 // Increased Line Segment Length to 0.35
+        speed: 0.005 + Math.random() * 0.005, 
+        lineLengthRatio: 0.45 // 线段长度增加一倍（占比达 0.45）
     };
 }
 
 function deployArc() {
-    if(telemetryArcs.length > 13) return; // More numerous (Up to 14 concurrent solid arcs)
+    if(telemetryArcs.length >= 35) return; // 容纳 35 条密集实体信号流同时运转
     const n1 = Math.floor(Math.random() * clusterHubs.length);
     let n2 = Math.floor(Math.random() * clusterHubs.length);
     while(n1 === n2) n2 = Math.floor(Math.random() * clusterHubs.length);
 
     const p1 = convertLatLon(clusterHubs[n1].lat, clusterHubs[n1].lon, earthRadius);
     const p2 = convertLatLon(clusterHubs[n2].lat, clusterHubs[n2].lon, earthRadius);
-    telemetryArcs.push(buildThickLineArc(p1, p2));
+    telemetryArcs.push(buildThinLineArc(p1, p2));
 }
-// Launch massive lines on start
-for(let i = 0; i < 10; i++) deployArc();
+
+// 初始化时一口气压入大量飞线
+for(let i = 0; i < 25; i++) deployArc();
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -384,6 +383,7 @@ controls.minDistance = 2.0;
 controls.maxDistance = 6.0;
 controls.enablePan = false;
 
+// 📱 完美移动端自适应
 function syncContainerDimensions() {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -403,15 +403,23 @@ function syncContainerDimensions() {
 window.addEventListener('resize', syncContainerDimensions);
 setTimeout(syncContainerDimensions, 50);
 
+let lastSpawnTime = 0;
 const clock = new THREE.Clock();
-function mainExecutionLoop() {
+
+function mainExecutionLoop(ts) {
     requestAnimationFrame(mainExecutionLoop);
     const elapsedTime = clock.getElapsedTime();
 
     earthMesh.rotation.y = elapsedTime * 0.015;
     cloudMesh.rotation.y = elapsedTime * 0.022;
 
-    // Advanced Mesh Rebuilding Loop for Flying Arc Segments
+    // 源源不断的流光生成判定：缩短发射冷却，高频补充新飞线
+    if (ts - lastSpawnTime > 150 && telemetryArcs.length < 35) {
+        deployArc();
+        lastSpawnTime = ts;
+    }
+
+    // 实体极细线动画渲染循环
     for(let i = telemetryArcs.length - 1; i >= 0; i--) {
         const arc = telemetryArcs[i];
         arc.progress += arc.speed;
@@ -421,26 +429,24 @@ function mainExecutionLoop() {
             arc.lineMesh.geometry.dispose();
             arc.lineMesh.material.dispose();
             telemetryArcs.splice(i, 1);
-            deployArc();
         } else {
-            const points = [];
+            const positions = arc.lineMesh.geometry.attributes.position.array;
             
-            // Re-sample specific points on the mathematical curve for the current timeframe
-            for(let j = 0; j <= segmentPoints; j++) {
-                const ratio = j / segmentPoints;
+            for(let j = 0; j < segmentPoints; j++) {
+                const ratio = j / (segmentPoints - 1);
                 let t = arc.progress - arc.lineLengthRatio * (1 - ratio);
                 t = Math.max(0, Math.min(1, t)); 
-                points.push(arc.curve.getPointAt(t));
+                
+                const pos = arc.curve.getPointAt(t);
+                positions[j * 3] = pos.x;
+                positions[j * 3 + 1] = pos.y;
+                positions[j * 3 + 2] = pos.z;
             }
+            arc.lineMesh.geometry.attributes.position.needsUpdate = true;
             
-            // Dispose old geometry and swap to prevent any WebGL memory leakages
-            const oldGeo = arc.lineMesh.geometry;
-            const subPath = new THREE.CatmullRomCurve3(points);
-            arc.lineMesh.geometry = new THREE.TubeGeometry(subPath, 12, 0.014, 4, false);
-            oldGeo.dispose();
-            
+            // 出界平滑淡出逻辑
             if(arc.progress > 1) {
-                arc.lineMesh.material.opacity = (((1 + arc.lineLengthRatio) - arc.progress) / arc.lineLengthRatio) * 0.9;
+                arc.lineMesh.material.opacity = ((1 + arc.lineLengthRatio) - arc.progress) / arc.lineLengthRatio;
             } else {
                 arc.lineMesh.material.opacity = 0.9;
             }
@@ -451,7 +457,7 @@ function mainExecutionLoop() {
     composer.render();
 }
 
-mainExecutionLoop();
+requestAnimationFrame(mainExecutionLoop);
 </script>
 </body>
 </html>
