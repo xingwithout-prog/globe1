@@ -9,7 +9,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-serif}
 
-/* 电脑端：左右布局 */
 .main-container{display:flex;width:100%;height:100vh;overflow:hidden}
 .globe-section{flex:1;min-width:0;position:relative;height:100vh}
 #globe-container{position:absolute;top:0;left:0;width:100%;height:100%}
@@ -52,10 +51,10 @@ html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-
 
 /* ========== 手机端 ========== */
 @media(max-width:900px){
-body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.main-container{flex-direction:column;height:auto;overflow:visible}
+body{overflow:hidden;position:fixed;top:0;left:0;right:0;bottom:0}
+.main-container{flex-direction:column;height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .globe-section{flex:none;width:100%;height:40vh;min-height:280px;position:relative}
-.panel-section{width:100%;min-width:100%;max-width:100%;height:auto;overflow-y:visible;overflow-x:hidden;border-left:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 16px 40px;gap:14px;display:block}
+.panel-section{width:100%;min-width:100%;max-width:100%;height:auto;overflow-y:visible;border-left:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 16px 40px;gap:14px;display:block}
 .stats-row{gap:8px}
 .stat-card{padding:14px}
 .stat-card .stat-value{font-size:24px}
@@ -77,7 +76,7 @@ body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 <div id="globe-container"></div>
 <div class="globe-label">🌐 <span>83+</span> Countries · <span>12,600+</span> Partners</div>
 </div>
-<div class="panel-section">
+<div class="panel-section" id="panelSection">
 <div class="panel-header">
 <div class="subtitle">🌐 Global Business Network</div>
 <h2>Real-Time <span>Data</span> Insights</h2>
@@ -164,6 +163,44 @@ li.innerHTML=e.f+' '+e.l+' <span class="feed-action">'+e.a+'</span> '+e.d+' <spa
 var list=document.getElementById('feedList');
 if(list){list.insertBefore(li,list.firstChild);if(list.children.length>6)list.removeChild(list.lastChild)}
 },4000);
+
+// 手机端：嵌套滚动联动
+var panel=document.getElementById('panelSection');
+var main=document.getElementById('mainContainer');
+var isMobile=window.innerWidth<=900;
+
+function setupNestedScroll(){
+if(!isMobile)return;
+panel.addEventListener('touchstart',function(e){
+var scrollTop=panel.scrollTop;
+var scrollHeight=panel.scrollHeight;
+var clientHeight=panel.clientHeight;
+panel.dataset.startY=e.touches[0].clientY;
+panel.dataset.startScroll=scrollTop;
+panel.dataset.atTop=scrollTop<=0;
+panel.dataset.atBottom=scrollTop+clientHeight>=scrollHeight-2;
+},{passive:true});
+
+panel.addEventListener('touchmove',function(e){
+var atTop=panel.dataset.atTop==='true';
+var atBottom=panel.dataset.atBottom==='true';
+var startY=parseFloat(panel.dataset.startY);
+var currentY=e.touches[0].clientY;
+var deltaY=startY-currentY;
+
+// 向下滑且到顶部，或向上滑且到底部 -> 让父容器滚动
+if((atTop&&deltaY<0)||(atBottom&&deltaY>0)){
+e.preventDefault();
+main.scrollTop+=deltaY;
+}
+},{passive:false});
+}
+
+setupNestedScroll();
+window.addEventListener('resize',function(){
+isMobile=window.innerWidth<=900;
+setupNestedScroll();
+});
 })();
 </script>
 
