@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a14;font-family:'Rajdhani',sans-serif}
+html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-serif}
 
 /* 电脑端：左右布局 */
 .main-container{display:flex;width:100%;height:100vh;overflow:hidden}
@@ -41,7 +41,7 @@ html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a14;font-famil
 .region-bar .bar-track{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
 .region-bar .bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#7b61ff,#00d4ff);width:0;transition:width 2s ease}
 
-.live-feed{background:rgba(20,22,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;flex:1;min-height:120px}
+.live-feed{background:rgba(20,22,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px}
 .live-feed h4{font-size:11px;color:#8890a8;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite}
 .feed-list{list-style:none;display:flex;flex-direction:column;gap:4px}
@@ -50,22 +50,21 @@ html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a14;font-famil
 .feed-list li .feed-time{margin-left:auto;font-size:9px;color:#555}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* 手机端 */
+/* ========== 手机端 ========== */
 @media(max-width:900px){
-.main-container{flex-direction:column;height:auto;overflow-y:auto}
-.globe-section{flex:none;width:100%;height:45vh;min-height:300px}
-.panel-section{width:100%;min-width:100%;max-width:100%;height:auto;overflow-y:visible;border-left:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 16px;gap:12px}
+body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.main-container{flex-direction:column;height:auto;overflow:visible}
+.globe-section{flex:none;width:100%;height:40vh;min-height:280px;position:relative}
+.panel-section{width:100%;min-width:100%;max-width:100%;height:auto;overflow-y:visible;overflow-x:hidden;border-left:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 16px 40px;gap:14px;display:block}
 .stats-row{gap:8px}
 .stat-card{padding:14px}
 .stat-card .stat-value{font-size:24px}
-.region-section{padding:14px}
-.live-feed{padding:14px;min-height:auto}
-.globe-label{font-size:11px;bottom:16px;padding:5px 14px;letter-spacing:2px}
 .panel-header h2{font-size:22px}
+.globe-label{font-size:11px;bottom:12px;padding:5px 12px;letter-spacing:2px}
 }
 
 @media(max-width:480px){
-.globe-section{height:35vh;min-height:250px}
+.globe-section{height:35vh;min-height:240px}
 .stat-card{padding:10px}
 .stat-card .stat-value{font-size:20px}
 .stat-card .stat-icon{font-size:15px;margin-bottom:4px}
@@ -73,12 +72,12 @@ html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a14;font-famil
 </style>
 </head>
 <body>
-<div class="main-container">
+<div class="main-container" id="mainContainer">
 <div class="globe-section">
 <div id="globe-container"></div>
 <div class="globe-label">🌐 <span>83+</span> Countries · <span>12,600+</span> Partners</div>
 </div>
-<div class="panel-section" id="panelSection">
+<div class="panel-section">
 <div class="panel-header">
 <div class="subtitle">🌐 Global Business Network</div>
 <h2>Real-Time <span>Data</span> Insights</h2>
@@ -114,15 +113,8 @@ html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a14;font-famil
 var barsAnimated=false;
 var countersAnimated=false;
 
-function isInView(el){
-var rect=el.getBoundingClientRect();
-return rect.top<window.innerHeight&&rect.bottom>0;
-}
-
 function animateCounters(){
 if(countersAnimated)return;
-var panel=document.getElementById('panelSection');
-if(!isInView(panel))return;
 countersAnimated=true;
 document.querySelectorAll('.counter').forEach(function(c){
 var target=parseFloat(c.getAttribute('data-target'));
@@ -143,22 +135,16 @@ requestAnimationFrame(update);
 
 function animateBars(){
 if(barsAnimated)return;
-var panel=document.getElementById('panelSection');
-if(!isInView(panel))return;
 barsAnimated=true;
 document.querySelectorAll('.bar-fill').forEach(function(b,i){
 setTimeout(function(){b.style.width=b.getAttribute('data-width')+'%'},i*200);
 });
 }
 
-function checkAnimations(){
+setTimeout(function(){
 animateCounters();
 animateBars();
-}
-
-setTimeout(checkAnimations,300);
-window.addEventListener('scroll',checkAnimations);
-setInterval(checkAnimations,1000);
+},500);
 
 // 实时动态
 var entries=[
@@ -187,21 +173,21 @@ if(list){list.insertBefore(li,list.firstChild);if(list.children.length>6)list.re
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-const container=document.getElementById('globe-container');
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(45,2,0.1,100);
+var container=document.getElementById('globe-container');
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(45,2,0.1,100);
 camera.position.set(0,0.3,4);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=1.3;
 container.appendChild(renderer.domElement);
-function resize(){var w=container.clientWidth;var h=container.clientHeight;renderer.setSize(w,h);camera.aspect=w/Math.max(h,1);camera.updateProjectionMatrix()}
+function resize(){var w=container.clientWidth;var h=container.clientHeight;if(w===0||h===0)return;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
 resize();
 window.addEventListener('resize',resize);
+window.addEventListener('orientationchange',function(){setTimeout(resize,200)});
 scene.add(new THREE.AmbientLight(0x334466,2.5));
 var sun=new THREE.DirectionalLight(0xffffff,2.8);sun.position.set(5,2,5);scene.add(sun);
-var rim=new THREE.PointLight(0x4488ff,3.5,8);rim.position.set(-2,1.5,3);scene.add(rim);
 var globe=new THREE.Group();scene.add(globe);
 var tex=new THREE.TextureLoader();
 var earthMesh=new THREE.Mesh(new THREE.SphereGeometry(1.2,64,64),new THREE.MeshPhongMaterial({map:tex.load('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blue_Marble_2002.png/1280px-Blue_Marble_2002.png'),bumpMap:tex.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),bumpScale:0.04,specular:new THREE.Color(0x222222),shininess:5}));
