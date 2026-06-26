@@ -9,6 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-serif}
 
+/* 电脑端：左右布局 */
 .main-container{display:flex;width:100%;height:100vh;overflow:hidden}
 .globe-section{flex:1;min-width:0;position:relative;height:100vh}
 #globe-container{position:absolute;top:0;left:0;width:100%;height:100%}
@@ -44,26 +45,30 @@ html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-
 .live-feed h4{font-size:11px;color:#8890a8;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite}
 .feed-list{list-style:none;display:flex;flex-direction:column;gap:4px}
-.feed-list li{font-size:11px;color:#b0b8c8;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadeIn 0.5s ease}
+.feed-list li{font-size:11px;color:#b0b8c8;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadeIn 0.5s ease;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .feed-list li .feed-action{color:#00d4ff;font-weight:600}
 .feed-list li .feed-time{margin-left:auto;font-size:9px;color:#555}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
+/* ========== 手机端 ========== */
 @media(max-width:900px){
-body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.main-container{flex-direction:column;height:auto;overflow:visible}
-.globe-section{flex:none;width:100%;height:45vh;min-height:300px;position:relative}
-.panel-section{width:100%;min-width:100%;max-width:100%;height:auto;overflow-y:visible;border-left:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 16px 40px;gap:14px;display:block}
+html,body{overflow:hidden;height:100%;position:fixed;width:100%}
+.main-container{flex-direction:column;height:100vh;overflow:hidden;position:relative}
+.globe-section{flex:none;width:100%;height:42vh;min-height:280px;position:relative;flex-shrink:0}
+.panel-section{width:100%;min-width:100%;max-width:100%;height:58vh;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;border-left:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 16px 30px;gap:14px;display:block;overscroll-behavior:contain}
 .stats-row{gap:8px}
 .stat-card{padding:14px}
 .stat-card .stat-value{font-size:24px}
 .panel-header h2{font-size:22px}
 .globe-label{font-size:11px;bottom:12px;padding:5px 12px;letter-spacing:2px}
 }
+
 @media(max-width:480px){
-.globe-section{height:40vh;min-height:250px}
+.globe-section{height:35vh;min-height:240px}
+.panel-section{height:65vh;padding:16px 12px 24px}
 .stat-card{padding:10px}
 .stat-card .stat-value{font-size:20px}
+.stat-card .stat-icon{font-size:15px;margin-bottom:4px}
 }
 </style>
 </head>
@@ -106,31 +111,113 @@ body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 
 <script>
 (function(){
-// 数字滚动
-setTimeout(function(){
-document.querySelectorAll('.counter').forEach(function(c){
-var t=parseFloat(c.getAttribute('data-target'));
-var d=t%1!==0;
-var du=1500;
-var s=performance.now();
-function u(n){
-var p=Math.min((n-s)/du,1);
-var e=1-Math.pow(2,-10*p);
-var v=t*e;
-c.textContent=d?v.toFixed(1):t>=1000?Math.floor(v).toLocaleString('en-US'):Math.floor(v);
-if(p<1)requestAnimationFrame(u);
-else c.textContent=d?t.toFixed(1):t>=1000?Math.floor(t).toLocaleString('en-US'):Math.floor(t);
+var barsAnimated=false;
+var countersAnimated=false;
+var panel=document.getElementById('panelSection');
+
+// 手机端滚动穿透逻辑
+var isMobile=window.innerWidth<=900;
+var panelScrollTop=0;
+var panelMaxScroll=0;
+
+function updatePanelMaxScroll(){
+if(!isMobile)return;
+panelMaxScroll=panel.scrollHeight-panel.clientHeight;
 }
-requestAnimationFrame(u);
+
+function isPanelAtBottom(){
+return panel.scrollTop>=panelMaxScroll-2;
+}
+
+function isPanelAtTop(){
+return panel.scrollTop<=2;
+}
+
+// 面板滚动事件
+panel.addEventListener('scroll',function(e){
+if(!isMobile)return;
+updatePanelMaxScroll();
+var delta=0;
+// 滚动到底部后，阻止面板继续捕获滚动
+if(isPanelAtBottom()&&panelMaxScroll>0){
+panel.style.overscrollBehavior='auto';
+}
 });
 
-// 进度条
+// 触摸事件处理滚动穿透
+var touchStartY=0;
+var touchStartPanelScroll=0;
+var panelReachedBottom=false;
+
+panel.addEventListener('touchstart',function(e){
+if(!isMobile)return;
+touchStartY=e.touches[0].clientY;
+touchStartPanelScroll=panel.scrollTop;
+updatePanelMaxScroll();
+panelReachedBottom=isPanelAtBottom()&&panelMaxScroll>0;
+},{passive:true});
+
+panel.addEventListener('touchmove',function(e){
+if(!isMobile)return;
+var touchY=e.touches[0].clientY;
+var deltaY=touchStartY-touchY;
+updatePanelMaxScroll();
+
+// 如果面板已到底且继续向下滑，让页面滚动
+if(panelReachedBottom&&deltaY>0){
+panel.scrollTop=panelMaxScroll;
+// 不阻止默认，让body可以滚动
+return;
+}
+
+// 如果面板在顶部且向上滑
+if(isPanelAtTop()&&deltaY<0){
+return;
+}
+},{passive:true});
+
+window.addEventListener('resize',function(){
+isMobile=window.innerWidth<=900;
+updatePanelMaxScroll();
+});
+
+// 初始计算
+setTimeout(updatePanelMaxScroll,500);
+
+function animateCounters(){
+if(countersAnimated)return;
+countersAnimated=true;
+document.querySelectorAll('.counter').forEach(function(c){
+var target=parseFloat(c.getAttribute('data-target'));
+var isDecimal=target%1!==0;
+var duration=1500;
+var start=performance.now();
+function update(now){
+var p=Math.min((now-start)/duration,1);
+var eased=1-Math.pow(2,-10*p);
+var cur=target*eased;
+c.textContent=isDecimal?cur.toFixed(1):target>=1000?Math.floor(cur).toLocaleString('en-US'):Math.floor(cur);
+if(p<1)requestAnimationFrame(update);
+else c.textContent=isDecimal?target.toFixed(1):target>=1000?Math.floor(target).toLocaleString('en-US'):Math.floor(target);
+}
+requestAnimationFrame(update);
+});
+}
+
+function animateBars(){
+if(barsAnimated)return;
+barsAnimated=true;
 document.querySelectorAll('.bar-fill').forEach(function(b,i){
 setTimeout(function(){b.style.width=b.getAttribute('data-width')+'%'},i*200);
 });
+}
+
+setTimeout(function(){
+animateCounters();
+animateBars();
 },500);
 
-// 实时交易
+// 实时动态
 var entries=[
 {f:'🇺🇸',l:'New York, USA',a:'Bulk',d:'$450K',t:'Now'},
 {f:'🇬🇧',l:'London, UK',a:'Order',d:'$215K',t:'Now'},
@@ -138,6 +225,8 @@ var entries=[
 {f:'🇫🇷',l:'Paris, FR',a:'Renew',d:'5Y',t:'Now'},
 {f:'🇨🇦',l:'Toronto, CA',a:'Deal',d:'$380K',t:'Now'},
 {f:'🇮🇹',l:'Milan, IT',a:'Order',d:'$92K',t:'Now'},
+{f:'🇪🇸',l:'Madrid, ES',a:'Sign',d:'New',t:'Now'},
+{f:'🇳🇱',l:'Amsterdam',a:'Bulk',d:'$156K',t:'Now'}
 ];
 setInterval(function(){
 var e=entries[Math.floor(Math.random()*entries.length)];
@@ -155,135 +244,40 @@ if(list){list.insertBefore(li,list.firstChild);if(list.children.length>6)list.re
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 var container=document.getElementById('globe-container');
 var scene=new THREE.Scene();
-var camera=new THREE.PerspectiveCamera(45,container.clientWidth/container.clientHeight,0.1,100);
-camera.position.set(0,0.3,3.8);
-
+var camera=new THREE.PerspectiveCamera(45,2,0.1,100);
+camera.position.set(0,0.3,4);
 var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
-renderer.setSize(container.clientWidth,container.clientHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.3;
 container.appendChild(renderer.domElement);
-
-function resize(){
-var w=container.clientWidth;
-var h=container.clientHeight;
-if(w===0||h===0)return;
-renderer.setSize(w,h);
-camera.aspect=w/h;
-camera.updateProjectionMatrix();
-}
+function resize(){var w=container.clientWidth;var h=container.clientHeight;if(w===0||h===0)return;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
 resize();
 window.addEventListener('resize',resize);
-
+window.addEventListener('orientationchange',function(){setTimeout(resize,200)});
 scene.add(new THREE.AmbientLight(0x334466,2.5));
-var sun=new THREE.DirectionalLight(0xffffff,2.8);
-sun.position.set(5,2,5);
-scene.add(sun);
-
+var sun=new THREE.DirectionalLight(0xffffff,2.8);sun.position.set(5,2,5);scene.add(sun);
+var globe=new THREE.Group();scene.add(globe);
 var tex=new THREE.TextureLoader();
-var globe=new THREE.Mesh(
-new THREE.SphereGeometry(1.2,64,64),
-new THREE.MeshPhongMaterial({
-map:tex.load('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blue_Marble_2002.png/1280px-Blue_Marble_2002.png'),
-bumpMap:tex.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
-bumpScale:0.04,
-specular:new THREE.Color(0x222222),
-shininess:5
-})
-);
-scene.add(globe);
-
-var clouds=new THREE.Mesh(
-new THREE.SphereGeometry(1.21,64,64),
-new THREE.MeshPhongMaterial({
-map:tex.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),
-transparent:true,
-opacity:0.3,
-blending:THREE.AdditiveBlending,
-depthWrite:false
-})
-);
-scene.add(clouds);
-
-// 城市光点
-function latLonToVec3(lat,lon,r){
-var phi=(90-lat)*(Math.PI/180);
-var theta=(lon+180)*(Math.PI/180);
-return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(theta),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));
-}
+var earthMesh=new THREE.Mesh(new THREE.SphereGeometry(1.2,64,64),new THREE.MeshPhongMaterial({map:tex.load('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blue_Marble_2002.png/1280px-Blue_Marble_2002.png'),bumpMap:tex.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),bumpScale:0.04,specular:new THREE.Color(0x222222),shininess:5}));
+globe.add(earthMesh);
+var clouds=new THREE.Mesh(new THREE.SphereGeometry(1.21,64,64),new THREE.MeshPhongMaterial({map:tex.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),transparent:true,opacity:0.3,blending:THREE.AdditiveBlending,depthWrite:false}));
+globe.add(clouds);
+function latLonToVec3(lat,lon,r){var phi=(90-lat)*(Math.PI/180);var theta=(lon+180)*(Math.PI/180);return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(theta),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta))}
 var cities=[{lat:40.71,lon:-74.01},{lat:37.77,lon:-122.42},{lat:51.51,lon:-0.13},{lat:48.86,lon:2.35},{lat:52.52,lon:13.40},{lat:25.20,lon:55.27},{lat:31.23,lon:121.47},{lat:35.68,lon:139.76},{lat:1.35,lon:103.82},{lat:-33.87,lon:151.21},{lat:-23.55,lon:-46.63},{lat:19.08,lon:72.88},{lat:55.75,lon:37.62},{lat:43.65,lon:-79.38},{lat:37.57,lon:126.98}];
-var cityGroup=new THREE.Group();
-scene.add(cityGroup);
-cities.forEach(function(c){
-var pos=latLonToVec3(c.lat,c.lon,1.22);
-var dot=new THREE.Mesh(new THREE.SphereGeometry(0.016,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));
-dot.position.copy(pos);
-cityGroup.add(dot);
-});
-
-// 飞线
-var linesGroup=new THREE.Group();
-scene.add(linesGroup);
+var cityPositions=cities.map(function(c){return{pos:latLonToVec3(c.lat,c.lon,1.22)}});
+var cityGroup=new THREE.Group();globe.add(cityGroup);
+cityPositions.forEach(function(cp){var dot=new THREE.Mesh(new THREE.SphereGeometry(0.016,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));dot.position.copy(cp.pos);cityGroup.add(dot)});
+var linesGroup=new THREE.Group();globe.add(linesGroup);
 var flyLines=[];
-function createLine(from,to,color){
-var mid=new THREE.Vector3().addVectors(from,to).multiplyScalar(0.5);
-var ctrl=mid.normalize().multiplyScalar(1.22+from.distanceTo(to)*0.3);
-var curve=new THREE.QuadraticBezierCurve3(from.clone(),ctrl,to.clone());
-var tube=new THREE.Mesh(new THREE.TubeGeometry(curve,24,0.005,6,false),new THREE.MeshBasicMaterial({color:color,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending,depthWrite:false}));
-var parts=[];
-for(var i=0;i<3;i++){
-var p=new THREE.Mesh(new THREE.SphereGeometry(0.012,4,4),new THREE.MeshBasicMaterial({color:0xffffff,blending:THREE.AdditiveBlending,depthWrite:false}));
-tube.add(p);
-parts.push({mesh:p,progress:i/3,speed:0.004+Math.random()*0.006});
-}
-linesGroup.add(tube);
-return{tube:tube,parts:parts,curve:curve,birth:performance.now(),life:5000+Math.random()*6000};
-}
-function spawn(){
-if(flyLines.length>=15)return;
-var i1=Math.floor(Math.random()*cities.length);
-var i2=Math.floor(Math.random()*cities.length);
-while(i2===i1)i2=Math.floor(Math.random()*cities.length);
-flyLines.push(createLine(latLonToVec3(cities[i1].lat,cities[i1].lon,1.22),latLonToVec3(cities[i2].lat,cities[i2].lon,1.22),new THREE.Color().setHSL(0.52+Math.random()*0.3,0.9,0.5+Math.random()*0.3)));
-}
+function createLine(from,to,color){var mid=new THREE.Vector3().addVectors(from,to).multiplyScalar(0.5);var ctrl=mid.normalize().multiplyScalar(1.22+from.distanceTo(to)*0.3);var curve=new THREE.QuadraticBezierCurve3(from.clone(),ctrl,to.clone());var tube=new THREE.Mesh(new THREE.TubeGeometry(curve,24,0.005,6,false),new THREE.MeshBasicMaterial({color:color,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending,depthWrite:false}));var parts=[];for(var i=0;i<3;i++){var p=new THREE.Mesh(new THREE.SphereGeometry(0.012,4,4),new THREE.MeshBasicMaterial({color:0xffffff,blending:THREE.AdditiveBlending,depthWrite:false}));tube.add(p);parts.push({mesh:p,progress:i/3,speed:0.004+Math.random()*0.006})}linesGroup.add(tube);return{tube:tube,parts:parts,curve:curve,birth:performance.now(),life:5000+Math.random()*6000}}
+function spawn(){if(flyLines.length>=15)return;var i1=Math.floor(Math.random()*cityPositions.length);var i2=Math.floor(Math.random()*cityPositions.length);while(i2===i1)i2=Math.floor(Math.random()*cityPositions.length);flyLines.push(createLine(cityPositions[i1].pos,cityPositions[i2].pos,new THREE.Color().setHSL(0.52+Math.random()*0.3,0.9,0.5+Math.random()*0.3)))}
 for(var i=0;i<10;i++)spawn();
-
-var controls=new OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;
-controls.dampingFactor=0.1;
-controls.autoRotate=true;
-controls.autoRotateSpeed=0.3;
-controls.minDistance=2;
-controls.maxDistance=6;
-controls.enablePan=false;
-
+var controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=0.1;controls.autoRotate=true;controls.autoRotateSpeed=0.3;controls.minDistance=2;controls.maxDistance=6;controls.enablePan=false;
 var lastSpawn=0;
-function animate(ts){
-requestAnimationFrame(animate);
-if(ts-lastSpawn>3500&&flyLines.length<15){spawn();lastSpawn=ts;}
-for(var i=flyLines.length-1;i>=0;i--){
-var line=flyLines[i];
-var age=ts-line.birth;
-line.tube.material.opacity=age<600?(age/600)*0.6:age>line.life-600?Math.max(0,((line.life-age)/600)*0.6):0.6;
-line.parts.forEach(function(p){
-p.progress+=p.speed;
-if(p.progress>1)p.progress-=1;
-p.mesh.position.copy(line.curve.getPointAt(p.progress).clone().sub(line.tube.position));
-});
-if(age>line.life){
-linesGroup.remove(line.tube);
-line.tube.geometry.dispose();
-line.tube.material.dispose();
-line.parts.forEach(function(p){p.mesh.geometry.dispose();p.mesh.material.dispose();});
-flyLines.splice(i,1);
-}
-}
-clouds.rotation.y+=0.00015;
-controls.update();
-renderer.render(scene,camera);
-}
+function animate(ts){requestAnimationFrame(animate);if(ts-lastSpawn>3500&&flyLines.length<15){spawn();lastSpawn=ts}for(var i=flyLines.length-1;i>=0;i--){var line=flyLines[i];var age=ts-line.birth;line.tube.material.opacity=age<600?(age/600)*0.6:age>line.life-600?Math.max(0,((line.life-age)/600)*0.6):0.6;line.parts.forEach(function(p){p.progress+=p.speed;if(p.progress>1)p.progress-=1;p.mesh.position.copy(line.curve.getPointAt(p.progress).clone().sub(line.tube.position))});if(age>line.life){linesGroup.remove(line.tube);line.tube.geometry.dispose();line.tube.material.dispose();line.parts.forEach(function(p){p.mesh.geometry.dispose();p.mesh.material.dispose()});flyLines.splice(i,1)}}clouds.rotation.y+=0.00015;controls.update();renderer.render(scene,camera)}
 requestAnimationFrame(animate);
 </script>
 </body>
