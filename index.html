@@ -3,149 +3,195 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BMAX Global Operations</title>
+<title>Minisforum Global Network</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root{
+--bg:#020510;
+--surface:rgba(12,15,35,0.8);
+--accent:#00c6ff;
+--accent2:#7b2fff;
+--gold:#f5a623;
+--text:#e8ecf4;
+--muted:#7a8099;
+--border:rgba(255,255,255,0.06);
+--glow:0 0 60px rgba(0,180,255,0.15);
+}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#050914;font-family:'Rajdhani',sans-serif}
+html,body{width:100%;background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{min-height:100vh}
 
-.main-container{display:flex;width:100%;height:100vh;overflow:hidden}
-.globe-section{flex:1;min-width:0;position:relative;height:100vh}
-#globe-container{position:absolute;top:0;left:0;width:100%;height:100%}
-.globe-label{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:#8890a8;font-size:13px;font-weight:500;letter-spacing:3px;text-transform:uppercase;z-index:2;background:rgba(5,9,20,0.7);padding:6px 18px;border-radius:20px;border:1px solid rgba(0,212,255,0.15);white-space:nowrap;pointer-events:none}
-.globe-label span{color:#00d4ff;font-weight:700}
+/* 星空背景 */
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.stars canvas{width:100%;height:100%}
 
-.panel-section{width:420px;min-width:420px;max-width:420px;padding:30px 24px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(90deg,rgba(5,9,20,0.97),rgba(10,15,35,0.93));border-left:1px solid rgba(0,212,255,0.1);overflow-y:auto;overflow-x:hidden;color:#e0e0e0;height:100vh}
-.panel-section::-webkit-scrollbar{width:3px}
-.panel-section::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.3);border-radius:2px}
+/* 主容器 */
+.app{position:relative;z-index:1;display:flex;width:100%;min-height:100vh}
+.globe-panel{flex:1;position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#globe-host{width:100%;height:100%;position:absolute;top:0;left:0}
+.globe-tag{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;font-size:12px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--muted);background:rgba(2,5,16,0.7);padding:8px 22px;border-radius:30px;border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);white-space:nowrap}
+.globe-tag em{font-style:normal;color:var(--accent);font-weight:700}
 
-.panel-header .subtitle{font-size:11px;letter-spacing:4px;color:#00d4ff;text-transform:uppercase;margin-bottom:4px}
-.panel-header h2{font-size:32px;font-weight:700;color:#fff;line-height:1.2; letter-spacing: 1px;}
-.panel-header h2 span{background:linear-gradient(135deg,#00d4ff,#2563eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+/* 数据面板 */
+.data-panel{width:460px;min-width:460px;padding:40px 32px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(180deg,rgba(8,10,28,0.95) 0%,rgba(4,6,18,0.98) 100%);border-left:1px solid var(--border);z-index:2;position:relative}
+.data-panel::before{content:'';position:absolute;top:0;left:-1px;width:1px;height:120px;background:linear-gradient(180deg,var(--accent),transparent);opacity:0.5}
+.data-panel::-webkit-scrollbar{width:3px}
+.data-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:2px}
 
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat-card{background:rgba(15,20,40,0.7);border:1px solid rgba(0,212,255,0.1);border-radius:12px;padding:16px;position:relative; transition: all 0.3s ease;}
-.stat-card:hover {background:rgba(20,25,50,0.8); border-color: rgba(0,212,255,0.3);}
-.stat-card .stat-icon{font-size:18px;margin-bottom:6px}
-.stat-card .stat-value{font-size:28px;font-weight:700;color:#fff;line-height:1}
-.stat-card .stat-label{font-size:10px;color:#8890a8;margin-top:4px;letter-spacing:1px;text-transform:uppercase}
-.stat-card .stat-change{font-size:10px;margin-top:5px;font-weight:600;color:#4ade80}
-.accent-dot{position:absolute;top:10px;right:10px;width:6px;height:6px;border-radius:50%;background:#00d4ff;box-shadow:0 0 8px #00d4ff;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 6px #00d4ff}50%{box-shadow:0 0 16px #00d4ff}}
+/* 标题区 */
+.header .eyebrow{font-size:11px;letter-spacing:5px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;font-weight:600}
+.header h2{font-size:32px;font-weight:700;line-height:1.15;letter-spacing:-0.5px}
+.header h2 .grad{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 
-.region-section{background:rgba(15,20,40,0.7);border:1px solid rgba(0,212,255,0.1);border-radius:12px;padding:16px}
-.region-section h4{font-size:11px;color:#8890a8;letter-spacing:2px;margin-bottom:10px}
-.region-bar{margin-bottom:8px}
-.region-bar .bar-info{display:flex;justify-content:space-between;font-size:11px;color:#c0c8d8;margin-bottom:3px}
-.region-bar .bar-info .region-pct{color:#00d4ff;font-weight:700}
-.region-bar .bar-track{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
-.region-bar .bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2563eb,#00d4ff);width:0;transition:width 2s ease}
+/* KPI卡片网格 */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 16px;position:relative;overflow:hidden;transition:all 0.35s ease;cursor:default}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:var(--glow);border-color:rgba(255,255,255,0.15)}
+.kpi-card .icon{font-size:20px;margin-bottom:8px}
+.kpi-card .value{font-size:30px;font-weight:700;line-height:1;letter-spacing:-1px}
+.kpi-card .value .num{background:linear-gradient(180deg,#ffffff 0%,#a0c4ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.kpi-card .label{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:2px;text-transform:uppercase;font-weight:500}
+.kpi-card .delta{font-size:11px;margin-top:7px;font-weight:600;color:#34d399}
+.kpi-card .pulse-dot{position:absolute;top:12px;right:12px;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent);animation:softPulse 2.4s ease-in-out infinite}
+.kpi-card:nth-child(2) .pulse-dot{background:var(--accent2);box-shadow:0 0 14px var(--accent2);animation-delay:0.6s}
+@keyframes softPulse{0%,100%{transform:scale(1);opacity:0.8}50%{transform:scale(1.8);opacity:0.3}}
 
-.live-feed{background:rgba(15,20,40,0.7);border:1px solid rgba(0,212,255,0.1);border-radius:12px;padding:16px}
-.live-feed h4{font-size:11px;color:#8890a8;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite}
-.feed-list{list-style:none;display:flex;flex-direction:column;gap:4px}
-.feed-list li{font-size:11px;color:#b0b8c8;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadeIn 0.5s ease}
-.feed-list li .feed-action{color:#00d4ff;font-weight:600; display: inline-block; width: 60px;}
-.feed-list li .feed-time{margin-left:auto;font-size:9px;color:#667899}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* 区域分布 */
+.region-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 16px}
+.region-box h4{font-size:12px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;font-weight:600}
+.region-row{margin-bottom:10px}
+.region-row .info{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;font-weight:500}
+.region-row .info .pct{color:var(--accent);font-weight:700}
+.region-row .track{height:6px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden}
+.region-row .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0;transition:width 2s cubic-bezier(0.16,1,0.3,1);position:relative}
+.region-row .fill::after{content:'';position:absolute;right:0;top:-2px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 16px var(--accent)}
 
+/* 实时动态 */
+.live-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 16px;flex:1}
+.live-box h4{font-size:12px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399;animation:softPulse 1.6s ease-in-out infinite}
+.feed-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.feed-list li{padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.025);font-size:12px;color:#b0b8d0;display:flex;align-items:center;gap:6px;animation:slideUp 0.45s ease}
+.feed-list li .flag{font-size:15px;flex-shrink:0}
+.feed-list li .act{color:var(--accent);font-weight:600;margin:0 2px}
+.feed-list li .time{margin-left:auto;font-size:10px;color:#555;flex-shrink:0}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* 移动端 */
 @media(max-width:900px){
 body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.main-container{flex-direction:column;height:auto;overflow:visible}
-.globe-section{flex:none;width:100%;height:45vh;min-height:300px;position:relative}
-.panel-section{width:100%;min-width:100%;max-width:100%;height:auto;overflow-y:visible;border-left:none;border-top:1px solid rgba(0,212,255,0.1);padding:20px 16px 40px;gap:14px;display:block}
-.stats-row{gap:8px}
-.stat-card{padding:14px}
-.stat-card .stat-value{font-size:24px}
-.panel-header h2{font-size:22px}
-.globe-label{font-size:11px;bottom:12px;padding:5px 12px;letter-spacing:2px}
+.app{flex-direction:column;min-height:auto}
+.globe-panel{position:relative;top:auto;height:50vh;min-height:340px;flex:none}
+.data-panel{width:100%;min-width:100%;padding:24px 16px 40px;gap:14px}
+.header h2{font-size:24px}
+.kpi-card .value{font-size:24px}
+.globe-tag{font-size:10px;bottom:14px;padding:6px 14px;letter-spacing:3px}
 }
 @media(max-width:480px){
-.globe-section{height:40vh;min-height:250px}
-.stat-card{padding:10px}
-.stat-card .stat-value{font-size:20px}
+.globe-panel{height:42vh;min-height:280px}
+.kpi-grid{gap:8px}
+.kpi-card{padding:12px 10px}
+.kpi-card .value{font-size:20px}
+.kpi-card .icon{font-size:16px}
 }
 </style>
 </head>
 <body>
-<div class="main-container" id="mainContainer">
-<div class="globe-section">
-<div id="globe-container"></div>
-<div class="globe-label">🌐 <span>85+</span> Countries · <span>3.2M+</span> Devices Active</div>
+
+<div class="stars"><canvas id="starsCanvas"></canvas></div>
+
+<div class="app">
+<div class="globe-panel">
+<div id="globe-host"></div>
+<div class="globe-tag">🌐 <em>83+</em> Countries &nbsp;·&nbsp; <em>12,600+</em> Partners</div>
 </div>
-<div class="panel-section" id="panelSection">
-<div class="panel-header">
-<div class="subtitle">🌐 BMAX Global 3C Hardware</div>
-<h2>Real-Time <span>Sales</span> Data</h2>
+
+<div class="data-panel">
+<div class="header">
+<div class="eyebrow">Global Business Network</div>
+<h2>Real‑Time <span class="grad">Data</span> Command</h2>
 </div>
-<div class="stats-row">
-<div class="stat-card"><div class="stat-icon">🌍</div><div class="stat-value"><span class="counter" data-target="85">85</span>+</div><div class="stat-label">Covered Markets</div><div class="stat-change">▲ +12.5% YoY</div><div class="accent-dot"></div></div>
-<div class="stat-card"><div class="stat-icon">💻</div><div class="stat-value"><span class="counter" data-target="158">158</span>K</div><div class="stat-label">Monthly Units (Mini PC & Pad)</div><div class="stat-change">▲ +18.3% MoM</div><div class="accent-dot" style="background:#2563eb;box-shadow:0 0 8px #2563eb"></div></div>
-<div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value"><span class="counter" data-target="2.45">2.45</span>M</div><div class="stat-label">Global Active Users</div><div class="stat-change">▲ +25.7% YoY</div></div>
-<div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value"><span class="counter" data-target="99.2">99.2</span>%</div><div class="stat-label">Positive Feedback</div><div class="stat-change">▲ Top Rated Tier</div></div>
+
+<div class="kpi-grid">
+<div class="kpi-card"><div class="icon">🏢</div><div class="value"><span class="num counter" data-target="12600">12600</span>+</div><div class="label">Global Partners</div><div class="delta">▲ +18.5%</div><div class="pulse-dot"></div></div>
+<div class="kpi-card"><div class="icon">📦</div><div class="value"><span class="num counter" data-target="3.85">3.85</span>M</div><div class="label">Monthly Shipments</div><div class="delta">▲ +12.3%</div><div class="pulse-dot"></div></div>
+<div class="kpi-card"><div class="icon">👥</div><div class="value"><span class="num counter" data-target="2300">2300</span>K+</div><div class="label">Enterprise Clients</div><div class="delta">▲ +22.7%</div></div>
+<div class="kpi-card"><div class="icon">⭐</div><div class="value"><span class="num counter" data-target="99.7">99.7</span>%</div><div class="label">Satisfaction</div><div class="delta">▲ Leading</div></div>
 </div>
-<div class="region-section">
-<h4>📊 Regional Logistics & Distribution</h4>
-<div class="region-bar"><div class="bar-info"><span>🌍 Europe (EU & UK)</span><span class="region-pct">38%</span></div><div class="bar-track"><div class="bar-fill" data-width="38"></div></div></div>
-<div class="region-bar"><div class="bar-info"><span>🌎 North America</span><span class="region-pct">32%</span></div><div class="bar-track"><div class="bar-fill" data-width="32"></div></div></div>
-<div class="region-bar"><div class="bar-info"><span>🌎 South America</span><span class="region-pct">15%</span></div><div class="bar-track"><div class="bar-fill" data-width="15"></div></div></div>
-<div class="region-bar"><div class="bar-info"><span>🌏 Asia Pacific</span><span class="region-pct">10%</span></div><div class="bar-track"><div class="bar-fill" data-width="10"></div></div></div>
-<div class="region-bar"><div class="bar-info"><span>🌍 Middle East & Africa</span><span class="region-pct">5%</span></div><div class="bar-track"><div class="bar-fill" data-width="5"></div></div></div>
+
+<div class="region-box">
+<h4>📊 Regional Distribution</h4>
+<div class="region-row"><div class="info"><span>🌍 Europe</span><span class="pct">35%</span></div><div class="track"><div class="fill" data-width="35"></div></div></div>
+<div class="region-row"><div class="info"><span>🌎 North America</span><span class="pct">30%</span></div><div class="track"><div class="fill" data-width="30"></div></div></div>
+<div class="region-row"><div class="info"><span>🌏 Asia Pacific</span><span class="pct">20%</span></div><div class="track"><div class="fill" data-width="20"></div></div></div>
+<div class="region-row"><div class="info"><span>🌍 Middle East & Africa</span><span class="pct">10%</span></div><div class="track"><div class="fill" data-width="10"></div></div></div>
+<div class="region-row"><div class="info"><span>🌎 Latin America</span><span class="pct">5%</span></div><div class="track"><div class="fill" data-width="5"></div></div></div>
 </div>
-<div class="live-feed">
-<h4><span class="live-dot"></span> Live B2B/B2C Orders</h4>
+
+<div class="live-box">
+<h4><span class="live-dot"></span> Live Transactions</h4>
 <ul class="feed-list" id="feedList">
-<li>🇩🇪 Berlin, DE <span class="feed-action">B2B Bulk</span> 300x MaxMini B8 <span class="feed-time">Just now</span></li>
-<li>🇺🇸 New York, USA <span class="feed-action">Retail</span> 1x MaxBook 14 <span class="feed-time">1m ago</span></li>
-<li>🇪🇸 Madrid, ES <span class="feed-action">Restock</span> 500x MaxPad I11 <span class="feed-time">3m ago</span></li>
-<li>🇧🇷 São Paulo, BR <span class="feed-action">B2B Order</span> 250x Mini PC <span class="feed-time">6m ago</span></li>
+<li><span class="flag">🇩🇪</span> Berlin <span class="act">New Order</span> $128K <span class="time">Just now</span></li>
+<li><span class="flag">🇺🇸</span> New York <span class="act">Bulk</span> $450K <span class="time">1m</span></li>
+<li><span class="flag">🇬🇧</span> London <span class="act">Renewal</span> 5Y <span class="time">3m</span></li>
+<li><span class="flag">🇫🇷</span> Paris <span class="act">Distributor</span> Signed <span class="time">6m</span></li>
 </ul>
 </div>
 </div>
 </div>
 
 <script>
+// ============ 星空背景 ============
 (function(){
-setTimeout(function(){
-document.querySelectorAll('.counter').forEach(function(c){
-var t=parseFloat(c.getAttribute('data-target'));
-var d=t%1!==0;
-var du=1500;
-var s=performance.now();
-function u(n){
-var p=Math.min((n-s)/du,1);
-var e=1-Math.pow(2,-10*p);
-var v=t*e;
-c.textContent=d?v.toFixed(2):t>=1000?Math.floor(v).toLocaleString('en-US'):Math.floor(v);
-if(p<1)requestAnimationFrame(u);
-else c.textContent=d?t.toFixed(2):t>=1000?Math.floor(t).toLocaleString('en-US'):Math.floor(t);
+var cv=document.getElementById('starsCanvas');
+var ctx=cv.getContext('2d');
+var stars=[];
+function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+for(var i=0;i<260;i++){stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.6+0.2,s:Math.random()*0.012+0.004,o:Math.random(),od:1})}
+function draw(){
+ctx.clearRect(0,0,cv.width,cv.height);
+stars.forEach(function(s){
+s.o+=s.od*s.s;if(s.o>=1){s.o=1;s.od=-1}if(s.o<=0.1){s.o=0.1;s.od=1}
+ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(160,190,240,'+s.o+')';ctx.fill()
+});
+requestAnimationFrame(draw)
 }
-requestAnimationFrame(u);
-});
+draw();
+})();
 
-document.querySelectorAll('.bar-fill').forEach(function(b,i){
-setTimeout(function(){b.style.width=b.getAttribute('data-width')+'%'},i*200);
-});
-},500);
+// ============ 数据动画 ============
+(function(){
+var barsDone=false;
+function animCounters(){
+document.querySelectorAll('.counter').forEach(function(el){
+var t=parseFloat(el.getAttribute('data-target'));
+var dec=t%1!==0;
+var st=performance.now();
+function up(now){
+var p=Math.min((now-st)/1600,1);
+var ease=1-Math.pow(2,-10*p);
+var cur=t*ease;
+el.textContent=dec?cur.toFixed(1):t>=1000?Math.floor(cur).toLocaleString('en-US'):Math.floor(cur);
+if(p<1)requestAnimationFrame(up);else el.textContent=dec?t.toFixed(1):t>=1000?Math.floor(t).toLocaleString('en-US'):Math.floor(t)
+}
+requestAnimationFrame(up)
+})
+}
+function animBars(){
+if(barsDone)return;barsDone=true;
+document.querySelectorAll('.fill').forEach(function(b,i){setTimeout(function(){b.style.width=b.getAttribute('data-width')+'%'},i*180)})
+}
+setTimeout(function(){animCounters();animBars()},400);
 
-var entries=[
-{f:'🇺🇸',l:'New York, USA',a:'B2B Bulk',d:'500x MaxMini',t:'Now'},
-{f:'🇬🇧',l:'London, UK',a:'Retail',d:'1x MaxBook 16',t:'Now'},
-{f:'🇩🇪',l:'Berlin, DE',a:'Restock',d:'1Kx MaxPad',t:'Now'},
-{f:'🇫🇷',l:'Paris, FR',a:'B2B Order',d:'300x Mini PC',t:'Now'},
-{f:'🇪🇸',l:'Madrid, ES',a:'Distributor',d:'450x MaxBook',t:'Now'},
-{f:'🇧🇷',l:'São Paulo, BR',a:'B2B Bulk',d:'800x MaxPad',t:'Now'},
-{f:'🇨🇦',l:'Toronto, CA',a:'Retail',d:'1x MaxMini B6',t:'Now'},
-{f:'🇯🇵',l:'Tokyo, JP',a:'Retail',d:'1x Y11 Plus',t:'Now'},
-];
+var entries=[{f:'🇺🇸',l:'New York',a:'Bulk',d:'$450K',t:'Now'},{f:'🇬🇧',l:'London',a:'Order',d:'$215K',t:'Now'},{f:'🇩🇪',l:'Berlin',a:'Sign',d:'New',t:'Now'},{f:'🇫🇷',l:'Paris',a:'Renew',d:'5Y',t:'Now'},{f:'🇨🇦',l:'Toronto',a:'Deal',d:'$380K',t:'Now'},{f:'🇮🇹',l:'Milan',a:'Order',d:'$92K',t:'Now'},{f:'🇪🇸',l:'Madrid',a:'Sign',d:'New',t:'Now'},{f:'🇳🇱',l:'Amsterdam',a:'Bulk',d:'$156K',t:'Now'}];
 setInterval(function(){
 var e=entries[Math.floor(Math.random()*entries.length)];
 var li=document.createElement('li');
-li.innerHTML=`${e.f} <span style="display:inline-block; width:90px;">${e.l}</span> <span class="feed-action">${e.a}</span> <span style="color:#fff">${e.d}</span> <span class="feed-time">${e.t}</span>`;
+li.innerHTML='<span class="flag">'+e.f+'</span> '+e.l+' <span class="act">'+e.a+'</span> '+e.d+' <span class="time">'+e.t+'</span>';
 var list=document.getElementById('feedList');
 if(list){list.insertBefore(li,list.firstChild);if(list.children.length>6)list.removeChild(list.lastChild)}
-},3500);
+},3800);
 })();
 </script>
 
@@ -156,207 +202,104 @@ if(list){list.insertBefore(li,list.firstChild);if(list.children.length>6)list.re
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-var container=document.getElementById('globe-container');
-var scene=new THREE.Scene();
-var camera=new THREE.PerspectiveCamera(45,container.clientWidth/container.clientHeight,0.1,100);
-camera.position.set(0,0.3,3.8);
-
-var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
-renderer.setSize(container.clientWidth,container.clientHeight);
+const host=document.getElementById('globe-host');
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42,2,0.1,100);
+camera.position.set(0,0.2,4.5);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-container.appendChild(renderer.domElement);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.4;
+host.appendChild(renderer.domElement);
 
-function resize(){
-var w=container.clientWidth;
-var h=container.clientHeight;
-if(w===0||h===0)return;
-renderer.setSize(w,h);
-camera.aspect=w/h;
-camera.updateProjectionMatrix();
-}
-resize();
-window.addEventListener('resize',resize);
+function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
+resize();window.addEventListener('resize',resize);window.addEventListener('orientationchange',()=>setTimeout(resize,200));
 
-scene.add(new THREE.AmbientLight(0x223355, 3.5)); // 提亮地球暗部
-var sun=new THREE.DirectionalLight(0xffffff, 2.0);
-sun.position.set(5,2,5);
-scene.add(sun);
+// 光照
+scene.add(new THREE.AmbientLight(0x223355,2.8));
+const key=new THREE.DirectionalLight(0xffffff,3);key.position.set(5,3,5);scene.add(key);
+const fill=new THREE.DirectionalLight(0x335577,1.2);fill.position.set(-3,-1,-3);scene.add(fill);
 
-var tex=new THREE.TextureLoader();
-var globe=new THREE.Mesh(
-new THREE.SphereGeometry(1.2,64,64),
-new THREE.MeshPhongMaterial({
+const globeGrp=new THREE.Group();scene.add(globeGrp);
+const tex=new THREE.TextureLoader();
+
+// 地球
+const earthGeo=new THREE.SphereGeometry(1.22,80,80);
+const earthMat=new THREE.MeshPhongMaterial({
 map:tex.load('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blue_Marble_2002.png/1280px-Blue_Marble_2002.png'),
 bumpMap:tex.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
-bumpScale:0.04,
-specular:new THREE.Color(0x222222),
-shininess:10
-})
-);
-scene.add(globe);
+bumpScale:0.05,
+specular:new THREE.Color(0x111122),
+shininess:6,
+emissive:new THREE.Color(0x000011),
+emissiveIntensity:0.15,
+});
+const earth=new THREE.Mesh(earthGeo,earthMat);globeGrp.add(earth);
 
-var clouds=new THREE.Mesh(
-new THREE.SphereGeometry(1.21,64,64),
-new THREE.MeshPhongMaterial({
-map:tex.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),
-transparent:true,
-opacity:0.25,
-blending:THREE.AdditiveBlending,
-depthWrite:false
-})
-);
-scene.add(clouds);
+// 云层
+const cloudGeo=new THREE.SphereGeometry(1.235,80,80);
+const cloudMat=new THREE.MeshPhongMaterial({map:tex.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),transparent:true,opacity:0.38,blending:THREE.AdditiveBlending,depthWrite:false});
+const clouds=new THREE.Mesh(cloudGeo,cloudMat);globeGrp.add(clouds);
 
-function latLonToVec3(lat,lon,r){
-var phi=(90-lat)*(Math.PI/180);
-var theta=(lon+180)*(Math.PI/180);
-return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(theta),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));
-}
-var cities=[{lat:40.71,lon:-74.01},{lat:37.77,lon:-122.42},{lat:51.51,lon:-0.13},{lat:48.86,lon:2.35},{lat:52.52,lon:13.40},{lat:25.20,lon:55.27},{lat:31.23,lon:121.47},{lat:35.68,lon:139.76},{lat:1.35,lon:103.82},{lat:-33.87,lon:151.21},{lat:-23.55,lon:-46.63},{lat:19.08,lon:72.88},{lat:55.75,lon:37.62},{lat:43.65,lon:-79.38},{lat:37.57,lon:126.98},{lat:40.41,lon:-3.70}];
-var cityGroup=new THREE.Group();
-scene.add(cityGroup);
-cities.forEach(function(c){
-var pos=latLonToVec3(c.lat,c.lon,1.22);
-var dot=new THREE.Mesh(new THREE.SphereGeometry(0.016,6,6),new THREE.MeshBasicMaterial({color:0x00d4ff, blending:THREE.AdditiveBlending}));
-dot.position.copy(pos);
-cityGroup.add(dot);
+// 城市光点
+function llv(lat,lon,r){const p=(90-lat)*(Math.PI/180),t=(lon+180)*(Math.PI/180);return new THREE.Vector3(-r*Math.sin(p)*Math.cos(t),r*Math.cos(p),r*Math.sin(p)*Math.sin(t))}
+const cities=[
+{lat:40.71,lon:-74.01},{lat:37.77,lon:-122.42},{lat:34.05,lon:-118.24},{lat:47.61,lon:-122.33},
+{lat:51.51,lon:-0.13},{lat:48.86,lon:2.35},{lat:52.52,lon:13.40},{lat:52.37,lon:4.90},
+{lat:40.42,lon:-3.70},{lat:41.90,lon:12.50},{lat:59.33,lon:18.07},{lat:55.75,lon:37.62},
+{lat:25.20,lon:55.27},{lat:31.23,lon:121.47},{lat:35.68,lon:139.76},{lat:37.57,lon:126.98},
+{lat:1.35,lon:103.82},{lat:22.32,lon:114.17},{lat:13.75,lon:100.50},{lat:19.08,lon:72.88},
+{lat:-33.87,lon:151.21},{lat:-23.55,lon:-46.63},{lat:-34.60,lon:-58.38},{lat:43.65,lon:-79.38},
+{lat:41.01,lon:28.98},{lat:-26.20,lon:28.05},{lat:6.45,lon:3.40},{lat:24.71,lon:46.68},
+];
+const cps=cities.map(c=>({pos:llv(c.lat,c.lon,1.24)}));
+const cityGrp=new THREE.Group();globeGrp.add(cityGrp);
+const glowTex=(()=>{const cv=document.createElement('canvas');cv.width=32;cv.height=32;const cx=cv.getContext('2d');const g=cx.createRadialGradient(16,16,0,16,16,16);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(0.15,'rgba(255,255,255,0.9)');g.addColorStop(0.4,'rgba(100,180,255,0.5)');g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(0,0,32,32);return new THREE.CanvasTexture(cv)})();
+cps.forEach(cp=>{
+const d=new THREE.Mesh(new THREE.SphereGeometry(0.022,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));d.position.copy(cp.pos);cityGrp.add(d);
+const g=new THREE.Mesh(new THREE.PlaneGeometry(0.08,0.08),new THREE.ShaderMaterial({vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'varying vec2 vUv;uniform vec3 uColor;void main(){float d=length(vUv-0.5)*2.0;gl_FragColor=vec4(uColor,smoothstep(1.0,0.0,d)*0.85);}',uniforms:{uColor:{value:new THREE.Color(0x44ccff)}},transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));g.position.copy(cp.pos);g.lookAt(new THREE.Vector3(0,0,0));cityGrp.add(g)
 });
 
-// 重写飞线逻辑：使用 VertexColors 实现流光拖尾，抛弃呆板的 TubeGeometry
-var linesGroup=new THREE.Group();
-scene.add(linesGroup);
-var flyLines=[];
+// 飞线
+const lineGrp=new THREE.Group();globeGrp.add(lineGrp);
+const flyLines=[];
+function mkLine(f,t,cl){const mid=new THREE.Vector3().addVectors(f,t).multiplyScalar(0.5);const ctrl=mid.normalize().multiplyScalar(1.24+f.distanceTo(t)*0.32);const cv=new THREE.QuadraticBezierCurve3(f.clone(),ctrl,t.clone());const tube=new THREE.Mesh(new THREE.TubeGeometry(cv,28,0.006,8,false),new THREE.MeshBasicMaterial({color:cl,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending,depthWrite:false}));const pts=[];for(let i=0;i<4;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(0.015,6,6),new THREE.MeshBasicMaterial({color:0xffffff,blending:THREE.AdditiveBlending,depthWrite:false}));tube.add(p);pts.push({mesh:p,progress:i/4,speed:0.0035+Math.random()*0.007})}lineGrp.add(tube);return{tube,pts,cv,birth:performance.now(),life:5000+Math.random()*7000}}
+function spawn(){if(flyLines.length>=22)return;const i1=Math.floor(Math.random()*cps.length);let i2=Math.floor(Math.random()*cps.length);while(i2===i1)i2=Math.floor(Math.random()*cps.length);flyLines.push(mkLine(cps[i1].pos,cps[i2].pos,new THREE.Color().setHSL(0.54+Math.random()*0.25,0.95,0.48+Math.random()*0.35)))}
+for(let i=0;i<14;i++)spawn();
 
-function createCometLine(from, to, colorHex) {
-    var dist = from.distanceTo(to);
-    var mid = new THREE.Vector3().addVectors(from, to).multiplyScalar(0.5);
-    var ctrl = mid.normalize().multiplyScalar(1.22 + dist * 0.4); 
-    var curve = new THREE.QuadraticBezierCurve3(from, ctrl, to);
-    
-    var group = new THREE.Group();
+// 外层粒子环
+const ringGrp=new THREE.Group();globeGrp.add(ringGrp);
+const ringCount=300;const rg=new THREE.BufferGeometry();const rp=new Float32Array(ringCount*3);const rc=new Float32Array(ringCount*3);
+for(let i=0;i<ringCount;i++){const a=(i/ringCount)*Math.PI*2;const rad=1.55+Math.random()*0.25;const y=(Math.random()-0.5)*0.6;rp[i*3]=Math.cos(a)*rad;rp[i*3+1]=y;rp[i*3+2]=Math.sin(a)*rad;const cl=new THREE.Color().setHSL(0.55+Math.random()*0.15,0.85,0.5+Math.random()*0.4);rc[i*3]=cl.r;rc[i*3+1]=cl.g;rc[i*3+2]=cl.b}
+rg.setAttribute('position',new THREE.BufferAttribute(rp,3));rg.setAttribute('color',new THREE.BufferAttribute(rc,3));
+ringGrp.add(new THREE.Points(rg,new THREE.PointsMaterial({size:0.025,map:glowTex,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.75})));
 
-    // 1. 基础暗线 (轨迹基线)
-    var baseGeo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(40));
-    var baseMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.1 });
-    var baseLine = new THREE.Line(baseGeo, baseMat);
-    group.add(baseLine);
+// 脉冲光环
+const pulseRing=new THREE.Mesh(new THREE.TorusGeometry(1.48,0.008,16,120),new THREE.MeshBasicMaterial({color:0x44aaff,transparent:true,opacity:0.35,blending:THREE.AdditiveBlending,depthWrite:false}));globeGrp.add(pulseRing);
+const pulseRing2=new THREE.Mesh(new THREE.TorusGeometry(1.52,0.005,16,120),new THREE.MeshBasicMaterial({color:0x8844ff,transparent:true,opacity:0.25,blending:THREE.AdditiveBlending,depthWrite:false}));globeGrp.add(pulseRing2);
 
-    // 2. 流光拖尾 (利用 BufferGeometry 和 VertexColors 实现渐隐)
-    var tailSegments = 30; // 拖尾细分数
-    var tailGeo = new THREE.BufferGeometry();
-    var tailPositions = new Float32Array(tailSegments * 3);
-    var tailColors = new Float32Array(tailSegments * 3);
-    var baseColor = new THREE.Color(colorHex);
+// 轨道控制
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=0.07;controls.autoRotate=true;controls.autoRotateSpeed=0.25;controls.minDistance=2.5;controls.maxDistance=7;controls.enablePan=false;
 
-    for (var i = 0; i < tailSegments; i++) {
-        tailPositions[i*3] = from.x; tailPositions[i*3+1] = from.y; tailPositions[i*3+2] = from.z;
-        // 头部最亮，尾部平滑渐暗
-        var ratio = i / (tailSegments - 1);
-        var alpha = Math.pow(ratio, 2.5); // 非线性渐隐，让彗星头部更聚光
-        var c = baseColor.clone().multiplyScalar(alpha);
-        tailColors[i*3] = c.r; tailColors[i*3+1] = c.g; tailColors[i*3+2] = c.b;
-    }
-    tailGeo.setAttribute('position', new THREE.BufferAttribute(tailPositions, 3));
-    tailGeo.setAttribute('color', new THREE.BufferAttribute(tailColors, 3));
-    
-    var tailMat = new THREE.LineBasicMaterial({
-        vertexColors: true,
-        blending: THREE.AdditiveBlending,
-        transparent: true,
-        depthWrite: false
-    });
-    var tailLine = new THREE.Line(tailGeo, tailMat);
-    group.add(tailLine);
-
-    // 3. 高亮光核 (彗星头)
-    var headGeo = new THREE.SphereGeometry(0.012, 8, 8);
-    var headMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, blending: THREE.AdditiveBlending });
-    var headMesh = new THREE.Mesh(headGeo, headMat);
-    group.add(headMesh);
-
-    linesGroup.add(group);
-
-    return {
-        group: group,
-        curve: curve,
-        tailGeo: tailGeo,
-        headMesh: headMesh,
-        progress: 0,
-        speed: 0.005 + Math.random() * 0.004,
-        tailRatio: 0.25 + Math.random() * 0.1 // 拖尾长度占总曲线的比例
-    };
+let lastSpawn=0;
+function anim(ts){
+requestAnimationFrame(anim);
+if(ts-lastSpawn>2800&&flyLines.length<22){spawn();lastSpawn=ts}
+for(let i=flyLines.length-1;i>=0;i--){
+const l=flyLines[i],age=ts-l.birth;
+l.tube.material.opacity=age<700?(age/700)*0.7:age>l.life-700?Math.max(0,((l.life-age)/700)*0.7):0.7;
+l.pts.forEach(p=>{p.progress+=p.speed;if(p.progress>1)p.progress-=1;p.mesh.position.copy(l.cv.getPointAt(p.progress).clone().sub(l.tube.position))});
+if(age>l.life){lineGrp.remove(l.tube);l.tube.geometry.dispose();l.tube.material.dispose();l.pts.forEach(p=>{p.mesh.geometry.dispose();p.mesh.material.dispose()});flyLines.splice(i,1)}
 }
-
-function spawn(){
-    if(flyLines.length>=18)return;
-    var i1=Math.floor(Math.random()*cities.length);
-    var i2=Math.floor(Math.random()*cities.length);
-    while(i2===i1)i2=Math.floor(Math.random()*cities.length);
-    // 生成偏科技青蓝色的随机光
-    var color = new THREE.Color().setHSL(0.55 + Math.random()*0.1, 0.9, 0.6);
-    flyLines.push(createCometLine(
-        latLonToVec3(cities[i1].lat,cities[i1].lon,1.22),
-        latLonToVec3(cities[i2].lat,cities[i2].lon,1.22),
-        color
-    ));
+ringGrp.rotation.y+=0.0006;ringGrp.rotation.x+=0.0002;
+pulseRing.rotation.x+=0.003;pulseRing.rotation.y+=0.005;
+pulseRing2.rotation.z+=0.004;pulseRing2.rotation.x-=0.003;
+pulseRing.material.opacity=0.3+Math.sin(ts*0.001)*0.12;
+clouds.rotation.y+=0.00012;
+controls.update();renderer.render(scene,camera);
 }
-for(var i=0;i<12;i++) spawn();
-
-var controls=new OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;
-controls.dampingFactor=0.1;
-controls.autoRotate=true;
-controls.autoRotateSpeed=0.4;
-controls.minDistance=2;
-controls.maxDistance=6;
-controls.enablePan=false;
-
-var lastSpawn=0;
-function animate(ts){
-    requestAnimationFrame(animate);
-    if(ts-lastSpawn>2500 && flyLines.length<18){ spawn(); lastSpawn=ts; }
-    
-    // 更新所有飞线的顶点动画
-    for(var i=flyLines.length-1; i>=0; i--){
-        var line = flyLines[i];
-        line.progress += line.speed;
-        
-        if(line.progress > 1 + line.tailRatio) {
-            linesGroup.remove(line.group);
-            line.tailGeo.dispose();
-            line.headMesh.geometry.dispose();
-            line.headMesh.material.dispose();
-            flyLines.splice(i,1);
-        } else {
-            // 计算拖尾各点位置
-            var positions = line.tailGeo.attributes.position.array;
-            for(var j=0; j<30; j++) {
-                var pRatio = j / 29; // 0是尾巴末端, 1是头部
-                var t = line.progress - line.tailRatio * (1 - pRatio);
-                t = Math.max(0, Math.min(1, t)); // 限制在 0-1 之间
-                var pos = line.curve.getPoint(t);
-                positions[j*3] = pos.x;
-                positions[j*3+1] = pos.y;
-                positions[j*3+2] = pos.z;
-            }
-            line.tailGeo.attributes.position.needsUpdate = true;
-            
-            // 计算头部位置和透明度 (到达终点后渐隐)
-            var headT = Math.max(0, Math.min(1, line.progress));
-            var headPos = line.curve.getPoint(headT);
-            line.headMesh.position.copy(headPos);
-            
-            if(line.progress > 1) {
-                line.headMesh.material.opacity = 1 - (line.progress - 1) / line.tailRatio;
-            }
-        }
-    }
-    
-    clouds.rotation.y += 0.00015;
-    controls.update();
-    renderer.render(scene,camera);
-}
-requestAnimationFrame(animate);
+requestAnimationFrame(anim);
 </script>
 </body>
 </html>
