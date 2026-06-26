@@ -2,37 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BMAX Autonomous Global Intelligence Matrix</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BMAX Global Operations Matrix</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
     --neon-red: #ff0044;
-    --neon-dark-red: #44000c;
-    --neon-glow: #ff3300;
-    --glass-bg: rgba(10, 5, 5, 0.75);
-    --glass-border: rgba(255, 0, 68, 0.2);
+    --neon-dark-red: #33000d;
+    --glass-bg: rgba(6, 2, 4, 0.75);
+    --glass-border: rgba(255, 0, 68, 0.15);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdhani', sans-serif; overflow: hidden; color: #f8fafc; }
+html, body { width: 100%; height: 100%; background: #010103; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; color: #f8fafc; }
 
-/* 3D Canvas Layout */
-#webgl-main { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+/* WebGL 全屏背景 */
+#webgl-main { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
 
-/* HUD Framework */
-.hud-overlay { 
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; 
+/* 全球沉浸式 HUD 框架 */
+.hud-wrapper { 
+    position: relative; z-index: 10; width: 100%; min-height: 100vh; 
     pointer-events: none; display: grid; 
     grid-template-columns: 380px 1fr 380px; grid-template-rows: 90px 1fr; padding: 24px; gap: 24px; 
 }
-.hud-overlay * { pointer-events: auto; }
+.hud-wrapper * { pointer-events: auto; }
 
-/* Glassmorphic Panels */
+/* 高级超薄全息玻璃面板 */
 .glass-panel { 
-    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; 
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 24px; 
-    box-shadow: inset 0 0 30px rgba(255, 0, 68, 0.03), 0 20px 50px rgba(0,0,0,0.8); position: relative; 
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 14px; 
+    backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 22px; 
+    box-shadow: inset 0 0 20px rgba(255, 0, 68, 0.02), 0 15px 35px rgba(0,0,0,0.7); position: relative; 
 }
 .glass-panel::before { 
     content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px; 
@@ -40,57 +39,56 @@ html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdh
 }
 
 /* Header */
-.header-panel { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; height: 100%; padding: 0 30px; }
-.brand-zone h1 { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: 4px; color: #fff; }
-.brand-zone h1 span { color: var(--neon-red); text-shadow: 0 0 15px var(--neon-red); }
-.brand-zone p { font-size: 11px; letter-spacing: 5px; color: #64748b; text-transform: uppercase; margin-top: 2px; }
-.system-status { display: flex; align-items: center; gap: 16px; font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--neon-red); letter-spacing: 2px; }
-.status-pulse { width: 8px; height: 8px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 12px var(--neon-red); animation: pulse 1.5s infinite; }
+.header-panel { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; }
+.brand-zone h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 4px; color: #fff; }
+.brand-zone h1 span { color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
+.brand-zone p { font-size: 11px; letter-spacing: 4px; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+.system-status { display: flex; align-items: center; gap: 12px; font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--neon-red); letter-spacing: 1px; }
+.status-pulse { width: 7px; height: 7px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 10px var(--neon-red); animation: pulse 1.5s infinite; }
 
-/* Sidebars */
-.left-sidebar { grid-column: 1; display: flex; flex-direction: column; gap: 24px; }
-.right-sidebar { grid-column: 3; display: flex; flex-direction: column; gap: 24px; }
+/* Layout Columns */
+.left-sidebar { grid-column: 1; display: flex; flex-direction: column; gap: 20px; }
+.right-sidebar { grid-column: 3; display: flex; flex-direction: column; gap: 20px; }
 
-.panel-title { font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 2px; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-.panel-title::before { content: ''; width: 4px; height: 14px; background: var(--neon-red); display: inline-block; box-shadow: 0 0 8px var(--neon-red); }
+.panel-title { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 2px; color: #94a3b8; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.panel-title::before { content: ''; width: 3px; height: 12px; background: var(--neon-red); display: inline-block; box-shadow: 0 0 6px var(--neon-red); }
 
-/* Metrics */
-.grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.metric-card { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; }
+/* Data Dashboard Cards */
+.grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.metric-card { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 14px; border-radius: 8px; }
 .metric-card .label { font-size: 11px; color: #64748b; letter-spacing: 1px; text-transform: uppercase; }
-.metric-card .value { font-family: 'Orbitron', sans-serif; font-size: 24px; color: #fff; font-weight: 600; margin-top: 6px; }
-.metric-card .value span { color: var(--neon-red); }
+.metric-card .value { font-family: 'Orbitron', sans-serif; font-size: 22px; color: #fff; font-weight: 600; margin-top: 4px; }
 
-/* Charts */
-.chart-box { margin-top: 10px; }
-.progress-container { margin-bottom: 14px; }
-.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
-.progress-bar-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
-.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-dark-red), var(--neon-red)); width: 0; transition: width 2s cubic-bezier(0.075, 0.82, 0.165, 1); box-shadow: 0 0 8px var(--neon-red); }
+/* Progress Bars */
+.progress-container { margin-bottom: 12px; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 5px; }
+.progress-bar-track { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-dark-red), var(--neon-red)); width: 0; transition: width 2s ease-out; box-shadow: 0 0 6px var(--neon-red); }
 
-/* Logs */
-.log-stream { list-style: none; display: flex; flex-direction: column; gap: 10px; height: 100%; overflow: hidden; }
-.log-item { background: rgba(255, 0, 68, 0.01); border: 1px solid rgba(255, 0, 68, 0.04); padding: 12px; border-radius: 8px; font-size: 12px; animation: enterRow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+/* Logs Terminal */
+.log-stream { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.log-item { background: rgba(255, 0, 68, 0.01); border: 1px solid rgba(255, 0, 68, 0.03); padding: 10px; border-radius: 6px; font-size: 12px; animation: enterRow 0.4s ease-out forwards; }
 .log-item .tag { font-family: 'Orbitron', sans-serif; color: var(--neon-red); font-weight: 600; margin-right: 6px; }
-.log-item .meta { display: flex; justify-content: space-between; margin-top: 6px; color: #64748b; font-size: 11px; }
+.log-item .meta { display: flex; justify-content: space-between; margin-top: 5px; color: #64748b; font-size: 11px; }
 
-@keyframes enterRow { from { opacity: 0; transform: translateY(-15px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-@keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 18px var(--neon-red); } }
+@keyframes enterRow { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
 
-/* Mobile Optimization Layout */
+/* 📱 完美手机端移动自适应方案 */
 @media(max-width: 992px) {
-    html, body { overflow-y: auto; height: auto; }
-    .hud-overlay { display: flex; flex-direction: column; height: auto; padding: 16px; gap: 16px; position: relative; z-index: 10; }
-    #webgl-main { position: fixed; height: 45vh; top: 0; left: 0; width: 100%; z-index: 1; }
-    .header-panel { order: 1; flex-direction: column; gap: 12px; text-align: center; padding: 20px; margin-top: 0; }
-    .brand-zone h1 { font-size: 22px; }
+    body, html { overflow-y: auto; height: auto; }
+    .hud-wrapper { display: flex; flex-direction: column; padding: 16px; gap: 16px; height: auto; }
+    #webgl-main { position: fixed; height: 100vh; width: 100vw; top: 0; left: 0; }
+    
+    /* 顶部导航自适应占满并居中 */
+    .header-panel { order: 1; flex-direction: column; gap: 10px; text-align: center; padding: 16px; }
+    
+    /* 核心空桩占位符：确保手机端地球出现在屏幕正中央上方不被遮挡 */
+    .mobile-view-gap { order: 2; height: 40vh; min-height: 280px; pointer-events: none; }
+    
+    /* 数据卡片自然向下堆叠滚动 */
     .left-sidebar { order: 3; width: 100%; gap: 16px; }
-    .right-sidebar { order: 4; width: 100%; gap: 16px; }
-    .mobile-spacer { order: 2; height: 42vh; width: 100%; pointer-events: none; min-height: 300px; }
-    .glass-panel { padding: 18px; }
-    .grid-metrics { gap: 10px; }
-    .metric-card { padding: 12px; }
-    .metric-card .value { font-size: 20px; }
+    .right-sidebar { order: 4; width: 100%; gap: 16px; margin-bottom: 30px; }
 }
 </style>
 </head>
@@ -98,7 +96,7 @@ html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdh
 
 <div id="webgl-main"></div>
 
-<div class="hud-overlay">
+<div class="hud-wrapper">
     <header class="glass-panel header-panel">
         <div class="brand-zone">
             <h1>BMAX<span>.</span>INTELLIGENCE</h1>
@@ -110,7 +108,7 @@ html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdh
         </div>
     </header>
 
-    <div class="mobile-spacer"></div>
+    <div class="mobile-view-gap"></div>
 
     <div class="left-sidebar">
         <div class="glass-panel">
@@ -122,10 +120,10 @@ html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdh
                 </div>
                 <div class="metric-card">
                     <div class="label">Throughput Rate</div>
-                    <div class="value"><span class="counter" data-target="94.8">0</span><span>%</span></div>
+                    <div class="value"><span class="counter" data-target="94.8">0</span>%</div>
                 </div>
                 <div class="metric-card">
-                    <div class="label">Active Countries</div>
+                    <div class="label">Active Markets</div>
                     <div class="value counter" data-target="85">0</div>
                 </div>
                 <div class="metric-card">
@@ -139,15 +137,15 @@ html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdh
             <h3 class="panel-title">Hardware Segment Allocation</h3>
             <div class="chart-box">
                 <div class="progress-container">
-                    <div class="progress-labels"><span>MaxMini (AI Edge PC Series)</span><span>48%</span></div>
+                    <div class="progress-labels"><span>MaxMini (AI Edge PC)</span><span>48%</span></div>
                     <div class="progress-bar-track"><div class="progress-bar-fill" data-width="48"></div></div>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-labels"><span>MaxBook (High-Performance Laptop)</span><span>34%</span></div>
+                    <div class="progress-labels"><span>MaxBook (Performance Laptop)</span><span>34%</span></div>
                     <div class="progress-bar-track"><div class="progress-bar-fill" data-width="34"></div></div>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-labels"><span>MaxPad (Advanced Digital Computing)</span><span>18%</span></div>
+                    <div class="progress-labels"><span>MaxPad (Digital Computing)</span><span>18%</span></div>
                     <div class="progress-bar-track"><div class="progress-bar-fill" data-width="18"></div></div>
                 </div>
             </div>
@@ -159,11 +157,11 @@ html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdh
             <h3 class="panel-title">Live Quantum Link Telemetry</h3>
             <ul class="log-stream" id="logStream">
                 <li class="log-item">
-                    <div><span class="tag">[SYS_OK]</span> Frankfurt Node linked to London Logistics Central</div>
-                    <div class="meta"><span>PACKET SIZE: 2048kb</span><span>SYNCED</span></div>
+                    <div><span class="tag">[SYS_OK]</span> Frankfurt Node synced with London Central Hub</div>
+                    <div class="meta"><span>PACKET: 2048kb</span><span>SECURE</span></div>
                 </li>
                 <li class="log-item">
-                    <div><span class="tag">[B2B_EXEC]</span> 450x MaxMini Pro Dispatched to Los Angeles Hub</div>
+                    <div><span class="tag">[B2B_EXEC]</span> 450x MaxMini Pro Dispatched to Los Angeles</div>
                     <div class="meta"><span>ROUTE: DE -> US_WEST</span><span>IN TRANSIT</span></div>
                 </li>
             </ul>
@@ -172,7 +170,7 @@ html, body { width: 100%; height: 100%; background: #020104; font-family: 'Rajdh
 </div>
 
 <script>
-// Web UI Interface Logic
+// Dashboard UI Text & Animation Interactivity
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         document.querySelectorAll('.counter').forEach(el => {
@@ -196,13 +194,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, 400);
 
-    // Completely International Data Telemetry
+    // 纯国际化节点实时滚动数据（绝无国内节点）
     const locations = ["London, UK", "Tokyo, JP", "Paris, FR", "São Paulo, BR", "Madrid, ES", "Sydney, AU", "Singapore, SG", "New York, USA", "Berlin, DE", "Toronto, CA"];
     const actions = [
         { t: "[B2B_EXEC]", m: "Bulk Batch: 300x MaxBook Deployed", r: "EU -> EMEA_HUB" },
         { t: "[SYS_OK]", m: "Telemetry Handshake Completed Successfully", r: "EDGE_NODE_ACK" },
         { t: "[DIST_REQ]", m: "Inventory Balancing Triggered: MaxPad Fleet", r: "APAC_LOGISTICS" },
-        { t: "[DATA_SYNC]", m: "Cloud Infrastructure Synchronized", r: "US_EAST_NODE" }
+        { t: "[DATA_SYNC]", m: "Cloud Infrastructure Clusters Synchronized", r: "US_EAST_NODE" }
     ];
     setInterval(() => {
         const loc = locations[Math.floor(Math.random() * locations.length)];
@@ -234,38 +232,39 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 
 const canvasContainer = document.getElementById('webgl-main');
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x020104, 0.04);
+scene.fog = new THREE.FogExp2(0x020104, 0.05);
 
-const camera = new THREE.PerspectiveCamera(40, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 100);
-camera.position.set(0, 0.6, 4.2);
+const camera = new THREE.PerspectiveCamera(45, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 100);
+// 默认桌面端完美绝对居中初始化位置 (0, 0, 4.0)
+camera.position.set(0, 0, 4.0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.0; // 略微调低曝光度，让纹理更深邃清晰
+renderer.toneMappingExposure = 1.0; 
 canvasContainer.appendChild(renderer.domElement);
 
-// Post Processing Setup - 精准控光，防止地球过曝失真
+// 精准控光的后处理（防止过曝，仅保留飞线与红点的发光）
 const renderPass = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.6, 0.4, 0.1);
-bloomPass.threshold = 0.35; // 大幅提升阈值，防止地图本身反光触发流光模糊
-bloomPass.strength = 0.5;   // 调低发光强度，使其细腻自然而不刺眼
-bloomPass.radius = 0.5;
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.4, 0.3, 0.1);
+bloomPass.threshold = 0.5;  // 过滤掉写实地球表面，只让纯高亮红点飞线溢光
+bloomPass.strength = 0.6;   // 调谐至优雅舒适的辉光范围
+bloomPass.radius = 0.4;
 
 const composer = new EffectComposer(renderer);
 composer.addPass(renderPass);
 composer.addPass(bloomPass);
 
-// Lighting Configuration - 采用柔和的自然光照强力还原清晰地貌
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); 
+// 宇宙写实点光源系统（创造强烈且逼真的侧面晨昏线阴影）
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // 适中的暗部环境光，看清暗面轮廓
 scene.add(ambientLight);
 
-const sunLight = new THREE.DirectionalLight(0xffffff, 1.4);
-sunLight.position.set(5, 3, 5);
+const sunLight = new THREE.DirectionalLight(0xffffff, 2.2); // 强烈的恒星主光源
+sunLight.position.set(5, 2, 3);
 scene.add(sunLight);
 
-// 写实色彩的地球模型（无任何发光网格线、无浓重偏色干扰）
+// 高精度写实地貌地球（回归大自然原生纹理）
 const textureLoader = new THREE.TextureLoader();
 const earthRadius = 1.15;
 
@@ -273,15 +272,53 @@ const earthGeo = new THREE.SphereGeometry(earthRadius, 64, 64);
 const earthMat = new THREE.MeshStandardMaterial({
     map: textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'),
     bumpMap: textureLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
-    bumpScale: 0.03,
+    bumpScale: 0.025,
     roughnessMap: textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg'),
-    roughness: 0.5, // 提高粗糙度，消除大块亮白反光点
-    metalness: 0.0
+    roughness: 0.45, 
+    metalness: 0.05
 });
 const earthMesh = new THREE.Mesh(earthGeo, earthMat);
 scene.add(earthMesh);
 
-// Geographic Coordinate Mapping
+// 视差滚动独立云层（让地球细节更生动）
+const cloudGeo = new THREE.SphereGeometry(earthRadius * 1.015, 64, 64);
+const cloudMat = new THREE.MeshStandardMaterial({
+    map: textureLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),
+    transparent: true,
+    opacity: 0.3,
+    blending: THREE.NormalBlending
+});
+const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+scene.add(cloudMesh);
+
+// 🚀 自定义 GLSL Shader 大气层（核心真实感飞跃，渲染出一圈写实的太空边缘发光）
+const atmosVertexShader = `
+    varying vec3 vNormal;
+    void main() {
+        vNormal = normalize(normalMatrix * normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+const atmosFragmentShader = `
+    varying vec3 vNormal;
+    void main() {
+        float intensity = pow(0.7 - dot(vNormal, vec3(0, 0, 1.0)), 3.0);
+        gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity * 0.6;
+    }
+`;
+const atmosGeo = new THREE.SphereGeometry(earthRadius * 1.035, 64, 64);
+const atmosMat = new THREE.ShaderMaterial({
+    vertexShader: atmosVertexShader,
+    fragmentShader: atmosFragmentShader,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide,
+    transparent: true,
+    depthWrite: false
+});
+const atmosphere = new THREE.Mesh(atmosGeo, atmosMat);
+scene.add(atmosphere);
+
+// 经纬度位置换算引擎
 function convertLatLon(lat, lon, radius) {
     const phi = (90 - lat) * (Math.PI / 180);
     const theta = (lon + 180) * (Math.PI / 180);
@@ -292,7 +329,7 @@ function convertLatLon(lat, lon, radius) {
     );
 }
 
-// Global Hub Nodes
+// 纯境外主流国际枢纽经纬坐标
 const clusterHubs = [
     {lat: 40.71, lon: -74.01}, {lat: 51.51, lon: -0.13}, {lat: 48.86, lon: 2.35},
     {lat: 25.20, lon: 55.27},  {lat: 35.68, lon: 139.76}, {lat: -33.87, lon: 151.21}, 
@@ -304,9 +341,7 @@ const nodeGroup = new THREE.Group();
 earthMesh.add(nodeGroup);
 
 clusterHubs.forEach(hub => {
-    const targetPos = convertLatLon(hub.lat, hub.lon, earthRadius * 1.005);
-    
-    // Node Core Dot
+    const targetPos = convertLatLon(hub.lat, hub.lon, earthRadius * 1.002);
     const core = new THREE.Mesh(
         new THREE.SphereGeometry(0.012, 8, 8),
         new THREE.MeshBasicMaterial({ color: 0xff0044 })
@@ -314,7 +349,6 @@ clusterHubs.forEach(hub => {
     core.position.copy(targetPos);
     nodeGroup.add(core);
 
-    // Pulse Ring Accent
     const ring = new THREE.Mesh(
         new THREE.RingGeometry(0.015, 0.03, 16),
         new THREE.MeshBasicMaterial({ color: 0xff0044, transparent: true, opacity: 0.6, side: THREE.DoubleSide })
@@ -324,44 +358,37 @@ clusterHubs.forEach(hub => {
     nodeGroup.add(ring);
 });
 
-// Simplified High-Texture Particle Arc Engine
+// 轻量级量子微流体流光线
 const customLinesGroup = new THREE.Group();
 earthMesh.add(customLinesGroup);
 let telemetryArcs = [];
-const particlesPerArc = 18; 
+const particlesPerArc = 15; 
 
 function buildQuantumArc(start, end) {
     const distance = start.distanceTo(end);
     const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-    const control = mid.normalize().multiplyScalar(earthRadius + distance * 0.35);
+    const control = mid.normalize().multiplyScalar(earthRadius + distance * 0.32);
     const curve = new THREE.QuadraticBezierCurve3(start, control, end);
     
-    const trackGeo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(40));
-    const trackMat = new THREE.LineBasicMaterial({ color: 0xff0033, transparent: true, opacity: 0.04 });
-    const track = new THREE.Line(trackGeo, trackMat);
-    customLinesGroup.add(track);
-
     const pGroup = new THREE.Group();
-    const pGeo = new THREE.SphereGeometry(0.009, 6, 6);
+    const pGeo = new THREE.SphereGeometry(0.008, 4, 4);
     const swarm = [];
 
     for(let i = 0; i < particlesPerArc; i++) {
         const ratio = i / (particlesPerArc - 1);
         const pMat = new THREE.MeshBasicMaterial({
-            color: new THREE.Color(0xff0044).lerp(new THREE.Color(0x330005), 1 - ratio),
+            color: new THREE.Color(0xff0044).lerp(new THREE.Color(0x220002), 1 - ratio),
             transparent: true,
             depthWrite: false
         });
         const mesh = new THREE.Mesh(pGeo, pMat);
-        mesh.scale.setScalar(Math.pow(ratio, 2) * 1.4 + 0.2); 
+        mesh.scale.setScalar(Math.pow(ratio, 2) * 1.3 + 0.2); 
         pGroup.add(mesh);
-        swarm.push({ mesh: mesh, offsetRatio: ratio * 0.15 }); 
+        swarm.push({ mesh: mesh, offsetRatio: ratio * 0.12 }); 
     }
-    
     customLinesGroup.add(pGroup);
 
     return {
-        track: track,
         pGroup: pGroup,
         swarm: swarm,
         curve: curve,
@@ -382,7 +409,7 @@ function deployArc() {
 }
 for(let i = 0; i < 4; i++) deployArc();
 
-// Interactive Window / Camera Handling
+// Interactive Camera Configuration
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.04;
@@ -392,27 +419,37 @@ controls.minDistance = 2.0;
 controls.maxDistance = 5.0;
 controls.enablePan = false;
 
+// 📱 核心屏幕适配函数：通过调整 Controls 目标点，动态在手机上把地球视角上移
 function syncContainerDimensions() {
-    const w = canvasContainer.clientWidth;
-    const h = canvasContainer.clientHeight;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
+
+    if (w < 992) {
+        // 手机/平板模式：把 3D 地球轴心网上抬，留出下半部分空间给数据面板滚动
+        controls.target.set(0, 0.4, 0); 
+    } else {
+        // 桌面端模式：回到屏幕几何绝对正中心
+        controls.target.set(0, 0, 0);
+    }
 }
 window.addEventListener('resize', syncContainerDimensions);
-setTimeout(syncContainerDimensions, 100);
+setTimeout(syncContainerDimensions, 50);
 
-// Core System Sync Render Loop
+// Main Execution Sync Render Loop
 const clock = new THREE.Clock();
 function mainExecutionLoop() {
     requestAnimationFrame(mainExecutionLoop);
     const elapsedTime = clock.getElapsedTime();
 
-    // Smooth Earth Rotation
+    // 地球自转与云层错位运动
     earthMesh.rotation.y = elapsedTime * 0.015;
+    cloudMesh.rotation.y = elapsedTime * 0.022;
 
-    // Pulse Node Accents
+    // 雷达环呼吸
     nodeGroup.children.forEach((child, idx) => {
         if(child.geometry.type === "RingGeometry") {
             const dynamicScale = 1.0 + Math.sin(elapsedTime * 3.5 + idx) * 0.4;
@@ -421,16 +458,13 @@ function mainExecutionLoop() {
         }
     });
 
-    // Quantum Comet Array Iteration
+    // 飞线迭代
     for(let i = telemetryArcs.length - 1; i >= 0; i--) {
         const arc = telemetryArcs[i];
         arc.progress += arc.speed;
 
-        if(arc.progress > 1 + 0.15) { 
-            customLinesGroup.remove(arc.track);
+        if(arc.progress > 1 + 0.12) { 
             customLinesGroup.remove(arc.pGroup);
-            arc.track.geometry.dispose();
-            arc.track.material.dispose();
             arc.swarm.forEach(p => { p.mesh.geometry.dispose(); p.mesh.material.dispose(); });
             telemetryArcs.splice(i, 1);
             deployArc();
@@ -442,7 +476,7 @@ function mainExecutionLoop() {
                 p.mesh.position.copy(pos);
                 
                 if(arc.progress > 1) {
-                    p.mesh.material.opacity = (1.15 - arc.progress) / 0.15;
+                    p.mesh.material.opacity = (1.12 - arc.progress) / 0.12;
                 } else {
                     p.mesh.material.opacity = currentT > 0 ? 0.9 : 0;
                 }
