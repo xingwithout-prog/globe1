@@ -3,45 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>HeCongHub Global</title>
+<title>Minisforum Global</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-serif;color:#e0e0e0}
+html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-serif}
 
 .main-container{display:flex;width:100%;height:100vh;overflow:hidden}
-.globe-section{flex:1;position:relative;height:100vh}
-#globe-container{width:100%;height:100%}
+.globe-section{flex:1;min-width:0;position:relative;height:100vh}
+#globe-container{position:absolute;top:0;left:0;width:100%;height:100%}
+.globe-label{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:#8890a8;font-size:13px;font-weight:500;letter-spacing:3px;text-transform:uppercase;z-index:2;background:rgba(10,10,20,0.7);padding:6px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;pointer-events:none}
+.globe-label span{color:#00d4ff;font-weight:700}
 
-/* 核心优化：移动端嵌套滚动 */
-.panel-section{width:420px;min-width:420px;max-width:420px;padding:30px;background:linear-gradient(90deg,rgba(10,10,20,0.95),rgba(10,12,28,0.9));border-left:1px solid rgba(255,255,255,0.08);overflow-y:auto;height:100vh;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+.panel-section{width:420px;min-width:420px;max-width:420px;padding:30px 24px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(90deg,rgba(10,10,20,0.97),rgba(10,12,28,0.93));border-left:1px solid rgba(255,255,255,0.08);overflow-y:auto;overflow-x:hidden;color:#e0e0e0;height:100vh}
+.panel-section::-webkit-scrollbar{width:3px}
+.panel-section::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
 
-.panel-header h2{font-size:26px;font-weight:700;color:#fff;margin-bottom:20px}
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.stat-card{background:rgba(255,255,255,0.05);padding:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)}
-.stat-value{font-size:22px;font-weight:700;color:#00d4ff}
-.stat-label{font-size:10px;color:#8890a8;text-transform:uppercase;margin-top:4px}
+.panel-header .subtitle{font-size:11px;letter-spacing:4px;color:#00d4ff;text-transform:uppercase;margin-bottom:4px}
+.panel-header h2{font-size:26px;font-weight:700;color:#fff;line-height:1.2}
+.panel-header h2 span{background:linear-gradient(135deg,#00d4ff,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-card{background:rgba(20,22,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;position:relative}
+.stat-card .stat-icon{font-size:18px;margin-bottom:6px}
+.stat-card .stat-value{font-size:28px;font-weight:700;color:#fff;line-height:1}
+.stat-card .stat-label{font-size:10px;color:#8890a8;margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+.stat-card .stat-change{font-size:10px;margin-top:5px;font-weight:600;color:#4ade80}
+.accent-dot{position:absolute;top:10px;right:10px;width:6px;height:6px;border-radius:50%;background:#00d4ff;box-shadow:0 0 8px #00d4ff;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 6px #00d4ff}50%{box-shadow:0 0 16px #00d4ff}}
+
+.region-section{background:rgba(20,22,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px}
+.region-section h4{font-size:11px;color:#8890a8;letter-spacing:2px;margin-bottom:10px}
+.region-bar{margin-bottom:8px}
+.region-bar .bar-info{display:flex;justify-content:space-between;font-size:11px;color:#c0c8d8;margin-bottom:3px}
+.region-bar .bar-info .region-pct{color:#00d4ff;font-weight:700}
+.region-bar .bar-track{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.region-bar .bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#7b61ff,#00d4ff);width:0;transition:width 2s ease}
+
+.live-feed{background:rgba(20,22,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px}
+.live-feed h4{font-size:11px;color:#8890a8;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite}
+.feed-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.feed-list li{font-size:11px;color:#b0b8c8;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadeIn 0.5s ease}
+.feed-list li .feed-action{color:#00d4ff;font-weight:600}
+.feed-list li .feed-time{margin-left:auto;font-size:9px;color:#555}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 @media(max-width:900px){
-    body{overflow:auto}
-    .main-container{flex-direction:column;height:auto;overflow:visible}
-    .globe-section{flex:none;width:100%;height:40vh;min-height:300px}
-    .panel-section{width:100%;min-width:100%;height:auto;overflow-y:visible;border-left:none;border-top:1px solid rgba(255,255,255,0.08)}
+body{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.main-container{flex-direction:column;height:auto;overflow:visible}
+.globe-section{flex:none;width:100%;height:45vh;min-height:300px;position:relative}
+.panel-section{width:100%;min-width:100%;max-width:100%;height:auto;overflow-y:visible;border-left:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 16px 40px;gap:14px;display:block}
+.stats-row{gap:8px}
+.stat-card{padding:14px}
+.stat-card .stat-value{font-size:24px}
+.panel-header h2{font-size:22px}
+.globe-label{font-size:11px;bottom:12px;padding:5px 12px;letter-spacing:2px}
+}
+@media(max-width:480px){
+.globe-section{height:40vh;min-height:250px}
+.stat-card{padding:10px}
+.stat-card .stat-value{font-size:20px}
 }
 </style>
 </head>
 <body>
 <div class="main-container" id="mainContainer">
-    <div class="globe-section"><div id="globe-container"></div></div>
-    <div class="panel-section">
-        <div class="panel-header"><h2>Global Operation</h2></div>
-        <div class="stats-row">
-            <div class="stat-card"><div class="stat-value">12,600+</div><div class="stat-label">Partners</div></div>
-            <div class="stat-card"><div class="stat-value">3.85M</div><div class="stat-label">Shipments</div></div>
-        </div>
-        <div class="live-feed"><h4>Recent Transactions</h4><ul id="feedList" style="list-style:none;margin-top:10px;font-size:12px;color:#8890a8"></ul></div>
-    </div>
+<div class="globe-section">
+<div id="globe-container"></div>
+<div class="globe-label">🌐 <span>83+</span> Countries · <span>12,600+</span> Partners</div>
 </div>
+<div class="panel-section" id="panelSection">
+<div class="panel-header">
+<div class="subtitle">🌐 Global Business Network</div>
+<h2>Real-Time <span>Data</span> Insights</h2>
+</div>
+<div class="stats-row">
+<div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-value"><span class="counter" data-target="12600">12600</span>+</div><div class="stat-label">Global Partners</div><div class="stat-change">▲ +18.5%</div><div class="accent-dot"></div></div>
+<div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value"><span class="counter" data-target="3.85">3.85</span>M</div><div class="stat-label">Monthly Shipments</div><div class="stat-change">▲ +12.3%</div><div class="accent-dot" style="background:#7b61ff;box-shadow:0 0 8px #7b61ff"></div></div>
+<div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value"><span class="counter" data-target="2300">2300</span>K+</div><div class="stat-label">Enterprise Clients</div><div class="stat-change">▲ +22.7%</div></div>
+<div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value"><span class="counter" data-target="99.7">99.7</span>%</div><div class="stat-label">Satisfaction</div><div class="stat-change">▲ Leading</div></div>
+</div>
+<div class="region-section">
+<h4>📊 Regional Sales Distribution</h4>
+<div class="region-bar"><div class="bar-info"><span>🌍 Europe</span><span class="region-pct">35%</span></div><div class="bar-track"><div class="bar-fill" data-width="35"></div></div></div>
+<div class="region-bar"><div class="bar-info"><span>🌎 North America</span><span class="region-pct">30%</span></div><div class="bar-track"><div class="bar-fill" data-width="30"></div></div></div>
+<div class="region-bar"><div class="bar-info"><span>🌏 Asia Pacific</span><span class="region-pct">20%</span></div><div class="bar-track"><div class="bar-fill" data-width="20"></div></div></div>
+<div class="region-bar"><div class="bar-info"><span>🌍 Middle East & Africa</span><span class="region-pct">10%</span></div><div class="bar-track"><div class="bar-fill" data-width="10"></div></div></div>
+<div class="region-bar"><div class="bar-info"><span>🌎 Latin America</span><span class="region-pct">5%</span></div><div class="bar-track"><div class="bar-fill" data-width="5"></div></div></div>
+</div>
+<div class="live-feed">
+<h4><span class="live-dot"></span> Live Transactions</h4>
+<ul class="feed-list" id="feedList">
+<li>🇩🇪 Berlin, Germany <span class="feed-action">New Order</span> $128K <span class="feed-time">Just now</span></li>
+<li>🇺🇸 New York, USA <span class="feed-action">Bulk</span> $450K <span class="feed-time">1m ago</span></li>
+<li>🇬🇧 London, UK <span class="feed-action">Renew</span> 5Y <span class="feed-time">3m ago</span></li>
+<li>🇫🇷 Paris, France <span class="feed-action">Sign</span> New <span class="feed-time">6m ago</span></li>
+</ul>
+</div>
+</div>
+</div>
+
+<script>
+(function(){
+// 数字滚动
+setTimeout(function(){
+document.querySelectorAll('.counter').forEach(function(c){
+var t=parseFloat(c.getAttribute('data-target'));
+var d=t%1!==0;
+var du=1500;
+var s=performance.now();
+function u(n){
+var p=Math.min((n-s)/du,1);
+var e=1-Math.pow(2,-10*p);
+var v=t*e;
+c.textContent=d?v.toFixed(1):t>=1000?Math.floor(v).toLocaleString('en-US'):Math.floor(v);
+if(p<1)requestAnimationFrame(u);
+else c.textContent=d?t.toFixed(1):t>=1000?Math.floor(t).toLocaleString('en-US'):Math.floor(t);
+}
+requestAnimationFrame(u);
+});
+
+// 进度条
+document.querySelectorAll('.bar-fill').forEach(function(b,i){
+setTimeout(function(){b.style.width=b.getAttribute('data-width')+'%'},i*200);
+});
+},500);
+
+// 实时交易
+var entries=[
+{f:'🇺🇸',l:'New York, USA',a:'Bulk',d:'$450K',t:'Now'},
+{f:'🇬🇧',l:'London, UK',a:'Order',d:'$215K',t:'Now'},
+{f:'🇩🇪',l:'Berlin, DE',a:'Sign',d:'New',t:'Now'},
+{f:'🇫🇷',l:'Paris, FR',a:'Renew',d:'5Y',t:'Now'},
+{f:'🇨🇦',l:'Toronto, CA',a:'Deal',d:'$380K',t:'Now'},
+{f:'🇮🇹',l:'Milan, IT',a:'Order',d:'$92K',t:'Now'},
+];
+setInterval(function(){
+var e=entries[Math.floor(Math.random()*entries.length)];
+var li=document.createElement('li');
+li.innerHTML=e.f+' '+e.l+' <span class="feed-action">'+e.a+'</span> '+e.d+' <span class="feed-time">'+e.t+'</span>';
+var list=document.getElementById('feedList');
+if(list){list.insertBefore(li,list.firstChild);if(list.children.length>6)list.removeChild(list.lastChild)}
+},4000);
+})();
+</script>
 
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
@@ -50,55 +156,135 @@ html,body{width:100%;height:100%;background:#0a0a14;font-family:'Rajdhani',sans-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-const container = document.getElementById('globe-container');
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, container.clientWidth/container.clientHeight, 0.1, 100);
-camera.position.z = 2.5;
+var container=document.getElementById('globe-container');
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(45,container.clientWidth/container.clientHeight,0.1,100);
+camera.position.set(0,0.3,3.8);
 
-const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-renderer.setSize(container.clientWidth, container.clientHeight);
+var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setSize(container.clientWidth,container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 container.appendChild(renderer.domElement);
 
-// 真实地球纹理
-const texLoader = new THREE.TextureLoader();
-const earthMat = new THREE.MeshPhongMaterial({
-    map: texLoader.load('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blue_Marble_2002.png/1280px-Blue_Marble_2002.png'),
-    bumpMap: texLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
-    bumpScale: 0.05,
-    specular: new THREE.Color(0x333333),
-    shininess: 15
-});
+function resize(){
+var w=container.clientWidth;
+var h=container.clientHeight;
+if(w===0||h===0)return;
+renderer.setSize(w,h);
+camera.aspect=w/h;
+camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener('resize',resize);
 
-const globe = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), earthMat);
+scene.add(new THREE.AmbientLight(0x334466,2.5));
+var sun=new THREE.DirectionalLight(0xffffff,2.8);
+sun.position.set(5,2,5);
+scene.add(sun);
+
+var tex=new THREE.TextureLoader();
+var globe=new THREE.Mesh(
+new THREE.SphereGeometry(1.2,64,64),
+new THREE.MeshPhongMaterial({
+map:tex.load('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blue_Marble_2002.png/1280px-Blue_Marble_2002.png'),
+bumpMap:tex.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
+bumpScale:0.04,
+specular:new THREE.Color(0x222222),
+shininess:5
+})
+);
 scene.add(globe);
 
-// 云层
-const cloudMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(1.02, 64, 64),
-    new THREE.MeshPhongMaterial({
-        map: texLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),
-        transparent: true, opacity: 0.4
-    })
+var clouds=new THREE.Mesh(
+new THREE.SphereGeometry(1.21,64,64),
+new THREE.MeshPhongMaterial({
+map:tex.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png'),
+transparent:true,
+opacity:0.3,
+blending:THREE.AdditiveBlending,
+depthWrite:false
+})
 );
-scene.add(cloudMesh);
+scene.add(clouds);
 
-scene.add(new THREE.AmbientLight(0xffffff, 1.5));
-const light = new THREE.DirectionalLight(0xffffff, 2);
-light.position.set(5, 3, 5);
-scene.add(light);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.autoRotate = true;
-controls.enablePan = false;
-
-function animate() {
-    requestAnimationFrame(animate);
-    globe.rotation.y += 0.001;
-    cloudMesh.rotation.y += 0.0015;
-    controls.update();
-    renderer.render(scene, camera);
+// 城市光点
+function latLonToVec3(lat,lon,r){
+var phi=(90-lat)*(Math.PI/180);
+var theta=(lon+180)*(Math.PI/180);
+return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(theta),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));
 }
-animate();
+var cities=[{lat:40.71,lon:-74.01},{lat:37.77,lon:-122.42},{lat:51.51,lon:-0.13},{lat:48.86,lon:2.35},{lat:52.52,lon:13.40},{lat:25.20,lon:55.27},{lat:31.23,lon:121.47},{lat:35.68,lon:139.76},{lat:1.35,lon:103.82},{lat:-33.87,lon:151.21},{lat:-23.55,lon:-46.63},{lat:19.08,lon:72.88},{lat:55.75,lon:37.62},{lat:43.65,lon:-79.38},{lat:37.57,lon:126.98}];
+var cityGroup=new THREE.Group();
+scene.add(cityGroup);
+cities.forEach(function(c){
+var pos=latLonToVec3(c.lat,c.lon,1.22);
+var dot=new THREE.Mesh(new THREE.SphereGeometry(0.016,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));
+dot.position.copy(pos);
+cityGroup.add(dot);
+});
+
+// 飞线
+var linesGroup=new THREE.Group();
+scene.add(linesGroup);
+var flyLines=[];
+function createLine(from,to,color){
+var mid=new THREE.Vector3().addVectors(from,to).multiplyScalar(0.5);
+var ctrl=mid.normalize().multiplyScalar(1.22+from.distanceTo(to)*0.3);
+var curve=new THREE.QuadraticBezierCurve3(from.clone(),ctrl,to.clone());
+var tube=new THREE.Mesh(new THREE.TubeGeometry(curve,24,0.005,6,false),new THREE.MeshBasicMaterial({color:color,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending,depthWrite:false}));
+var parts=[];
+for(var i=0;i<3;i++){
+var p=new THREE.Mesh(new THREE.SphereGeometry(0.012,4,4),new THREE.MeshBasicMaterial({color:0xffffff,blending:THREE.AdditiveBlending,depthWrite:false}));
+tube.add(p);
+parts.push({mesh:p,progress:i/3,speed:0.004+Math.random()*0.006});
+}
+linesGroup.add(tube);
+return{tube:tube,parts:parts,curve:curve,birth:performance.now(),life:5000+Math.random()*6000};
+}
+function spawn(){
+if(flyLines.length>=15)return;
+var i1=Math.floor(Math.random()*cities.length);
+var i2=Math.floor(Math.random()*cities.length);
+while(i2===i1)i2=Math.floor(Math.random()*cities.length);
+flyLines.push(createLine(latLonToVec3(cities[i1].lat,cities[i1].lon,1.22),latLonToVec3(cities[i2].lat,cities[i2].lon,1.22),new THREE.Color().setHSL(0.52+Math.random()*0.3,0.9,0.5+Math.random()*0.3)));
+}
+for(var i=0;i<10;i++)spawn();
+
+var controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=0.1;
+controls.autoRotate=true;
+controls.autoRotateSpeed=0.3;
+controls.minDistance=2;
+controls.maxDistance=6;
+controls.enablePan=false;
+
+var lastSpawn=0;
+function animate(ts){
+requestAnimationFrame(animate);
+if(ts-lastSpawn>3500&&flyLines.length<15){spawn();lastSpawn=ts;}
+for(var i=flyLines.length-1;i>=0;i--){
+var line=flyLines[i];
+var age=ts-line.birth;
+line.tube.material.opacity=age<600?(age/600)*0.6:age>line.life-600?Math.max(0,((line.life-age)/600)*0.6):0.6;
+line.parts.forEach(function(p){
+p.progress+=p.speed;
+if(p.progress>1)p.progress-=1;
+p.mesh.position.copy(line.curve.getPointAt(p.progress).clone().sub(line.tube.position));
+});
+if(age>line.life){
+linesGroup.remove(line.tube);
+line.tube.geometry.dispose();
+line.tube.material.dispose();
+line.parts.forEach(function(p){p.mesh.geometry.dispose();p.mesh.material.dispose();});
+flyLines.splice(i,1);
+}
+}
+clouds.rotation.y+=0.00015;
+controls.update();
+renderer.render(scene,camera);
+}
+requestAnimationFrame(animate);
 </script>
 </body>
 </html>
